@@ -8,9 +8,9 @@ import ru.gamrekeli.API.Service.model.status.Status;
 import ru.gamrekeli.API.Service.repository.FriendShipRepository;
 import ru.gamrekeli.API.Service.repository.UserRepository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class FriendService {
@@ -41,13 +41,18 @@ public class FriendService {
         int len = listFriends.size();
         if (len != 0) {
             for (int i = 0; i < len; i ++) {
-                listUsers.add(listFriends.get(i).getFriend());
+                if (listFriends.get(i).getFriend().getUserId().equals(userId)) {
+                    listUsers.add(listFriends.get(i).getUser());
+                }
+                else {
+                    listUsers.add(listFriends.get(i).getFriend());
+                }
             }
         }
         return listUsers;
     }
 
-    public void addFriend(Long userId, Long friendId) {
+    public void addFriend(Long userId, Long friendId) throws NoSuchElementException{
         friendShipRepository.save(
                 FriendShip.builder()
                         .user(userRepository.findById(friendId).get())

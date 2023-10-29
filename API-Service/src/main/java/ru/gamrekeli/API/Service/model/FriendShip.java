@@ -31,13 +31,13 @@ public class FriendShip {
     @JoinColumn(
             name = "user_id"
     )
-    private User user;
+    private User user; // to
 
     @ManyToOne
     @JoinColumn(
             name = "friend_id"
     )
-    private User friend;
+    private User friend; // from
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -11,6 +11,7 @@ import ru.gamrekeli.API.Service.service.FriendService;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/api/v1/friend")
@@ -33,8 +34,9 @@ public class FriendController {
 
     @ResponseBody
     @PostMapping("/add/{userId}/{friendId}")
-    public ResponseEntity<FriendShip> addFriend(@PathVariable("userId") Long userId, @PathVariable("friendId") Long friendId) {
-        if (userId != friendId) {
+    public ResponseEntity<FriendShip> addFriend(@PathVariable("userId") Long userId,
+                                                @PathVariable("friendId") Long friendId) throws NoSuchElementException {
+        if (!userId.equals(friendId)) {
             friendService.addFriend(userId, friendId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -45,7 +47,7 @@ public class FriendController {
     @PostMapping("/confirm/{userId}/{friendId}")
     public ResponseEntity<FriendShip> confirmationAddFriend(@PathVariable("userId") Long userId,
                                                             @PathVariable("friendId") Long friendId) {
-        if (userId != friendId) {
+        if (!userId.equals(friendId)) {
             friendService.confirmationAddFriend(userId, friendId);
             return new ResponseEntity<>(HttpStatus.OK);
         }

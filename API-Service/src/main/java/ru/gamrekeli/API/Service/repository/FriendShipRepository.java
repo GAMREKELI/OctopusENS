@@ -16,7 +16,7 @@ public interface FriendShipRepository extends JpaRepository<FriendShip, Long> {
     @Query("SELECT f FROM FriendShip f WHERE f.user.userId = :userId AND f.status = NO")
     List<FriendShip> findAllSubscribersByUserId(@Param("userId") Long userId);
 
-    @Query("SELECT f FROM FriendShip f WHERE f.user.userId = :userId AND f.status = YES")
+    @Query("SELECT f FROM FriendShip f WHERE (f.user.userId = :userId OR f.friend.userId = :userId) AND f.status = YES")
     List<FriendShip> findAllFriendsByUserId(@Param("userId") Long userId);
 
     @Modifying(clearAutomatically = true)

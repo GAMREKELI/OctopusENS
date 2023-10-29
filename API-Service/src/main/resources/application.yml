@@ -13,6 +13,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/octopus
     username: pdursley
-    password: Q1234qwe
+#    password: Q1234qwe #for Mac
+    password: Q1234qwe__ #for Linux
     driver-class-name: com.mysql.cj.jdbc.Driver
 

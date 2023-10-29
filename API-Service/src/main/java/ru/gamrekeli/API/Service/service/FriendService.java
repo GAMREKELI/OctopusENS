@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.gamrekeli.API.Service.model.FriendShip;
 import ru.gamrekeli.API.Service.model.User;
+import ru.gamrekeli.API.Service.model.status.Status;
 import ru.gamrekeli.API.Service.repository.FriendShipRepository;
 import ru.gamrekeli.API.Service.repository.UserRepository;
 
@@ -46,7 +47,13 @@ public class FriendService {
         return listUsers;
     }
 
-//    public void addFriend() {
-//
-//    }
+    public void addFriend(User user, User friend) {
+        friendShipRepository.save(
+                FriendShip.builder()
+                        .user(user)
+                        .friend(friend)
+                        .status(Status.NO)
+                        .build()
+        );
+    }
 }

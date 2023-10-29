@@ -8,6 +8,7 @@ import ru.gamrekeli.API.Service.model.status.Status;
 import ru.gamrekeli.API.Service.repository.FriendShipRepository;
 import ru.gamrekeli.API.Service.repository.UserRepository;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,6 @@ public class FriendService {
             for (int i = 0; i < len; i ++) {
                 listUsers.add(listSubscribe.get(i).getFriend());
             }
-
         }
         return listUsers;
     }
@@ -47,13 +47,17 @@ public class FriendService {
         return listUsers;
     }
 
-    public void addFriend(User user, User friend) {
+    public void addFriend(Long userId, Long friendId) {
         friendShipRepository.save(
                 FriendShip.builder()
-                        .user(user)
-                        .friend(friend)
+                        .user(userRepository.findById(friendId).get())
+                        .friend(userRepository.findById(userId).get())
                         .status(Status.NO)
                         .build()
         );
+    }
+
+    public void confirmationAddFriend(Long userId, Long friendId)  {
+        friendShipRepository.confirmationAddFriend(userId, friendId);
     }
 }

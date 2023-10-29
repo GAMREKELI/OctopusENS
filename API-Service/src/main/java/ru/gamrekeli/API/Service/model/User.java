@@ -4,8 +4,6 @@ package ru.gamrekeli.API.Service.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -33,6 +31,18 @@ public class User {
     private Long userId;
 
     @Column(
+            name = "login",
+            nullable = false
+    )
+    private String login;
+
+    @Column(
+            name = "password",
+            nullable = false
+    )
+    private String password;
+
+    @Column(
             name = "first_name",
             nullable = false
     )
@@ -58,10 +68,4 @@ public class User {
 
     )
     private String phoneNumber;
-
-    @OneToMany
-    @JoinColumn(
-            name = "danger_events"
-    )
-    private List<DangerEvents> dangerEvents;
 }

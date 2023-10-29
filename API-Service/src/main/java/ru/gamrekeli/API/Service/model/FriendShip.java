@@ -1,8 +1,8 @@
 package ru.gamrekeli.API.Service.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
+import ru.gamrekeli.API.Service.model.status.Status;
 
 @Entity
 @Data
@@ -14,7 +14,7 @@ import lombok.*;
 @Table(
         name = "friendship"
 )
-public class Friendship {
+public class FriendShip {
 
     @Id
     @SequenceGenerator(
@@ -38,4 +38,8 @@ public class Friendship {
             name = "friend_id"
     )
     private User friend;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
 }

@@ -36,4 +36,10 @@ public class DangerEvents {
     )
     private Date time;
 
+    @ManyToOne
+    @JoinColumn(
+            name = "user_id"
+    )
+    private User user;
+
 }

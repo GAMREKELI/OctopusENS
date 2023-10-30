@@ -8,3 +8,14 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+spring:
+  kafka:
+    bootstrap-servers: host.docker.internal:29092, host.docker.internal:29093
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topics:
+    notification-topic: notification

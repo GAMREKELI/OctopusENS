@@ -9,7 +9,6 @@ import ru.gamrekeli.API.Service.model.FriendShip;
 import ru.gamrekeli.API.Service.model.User;
 import ru.gamrekeli.API.Service.service.FriendService;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 

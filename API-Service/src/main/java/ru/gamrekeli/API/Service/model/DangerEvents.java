@@ -1,6 +1,5 @@
 package ru.gamrekeli.API.Service.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 

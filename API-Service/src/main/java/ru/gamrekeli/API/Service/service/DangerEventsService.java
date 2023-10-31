@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.gamrekeli.API.Service.message.Message;
 import ru.gamrekeli.API.Service.model.DangerEvents;
 import ru.gamrekeli.API.Service.model.User;
+import ru.gamrekeli.API.Service.producer.KafkaProducer;
 import ru.gamrekeli.API.Service.repository.DangerEventsRepository;
 import ru.gamrekeli.API.Service.repository.UserRepository;
 import ru.gamrekeli.API.Service.service.exceptions.UserNotFoundException;
@@ -27,6 +28,9 @@ public class DangerEventsService {
     @Autowired
     private FriendService friendService;
 
+    @Autowired //
+    private KafkaProducer kafkaProducer; //
+
     public Message createDangerEvent(Long userId) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
@@ -34,20 +38,25 @@ public class DangerEventsService {
         }
 
         Date time = new Date();
+        DangerEvents dangerEvents = DangerEvents.builder()
+                .time(time)
+                .user(user.get())
+                .build();
         try {
-            dangerEventsRepository.save(
-                    DangerEvents.builder()
-                            .time(time)
-                            .user(user.get())
-                            .build()
-            );
+//            DangerEvents dangerEvents = DangerEvents.builder()
+//                    .time(time)
+//                    .user(user.get())
+//                    .build();
+            dangerEventsRepository.save(dangerEvents);
         } catch (DataAccessException e) {
             System.out.println("Невозможно добавить событие об опасности");
         }
 
         List<User> friends;
         friends = friendService.getFriends(userId);
+        kafkaProducer.sendMessage(user.get());
         return Message.builder()
+                .messageId(dangerEvents.getDangerId()) //
                 .user(user.get())
                 .text("Тестовое сообщение")
                 .time(time)

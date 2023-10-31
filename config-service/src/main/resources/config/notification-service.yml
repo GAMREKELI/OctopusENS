@@ -1,35 +1,35 @@
-server:
-  port: 9001
+#server:
+#  port: 9001
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
-spring:
-  main:
-    allow-bean-definition-overriding: true
-  application:
-    name: notification-service
-  kafka:
-    bootstrap-servers: host.docker.internal:29092,host.docker.internal:29093
-    listener:
-      ack-mode: record
-    producer:
-      client-id: ${spring.application.name}
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: ru.gamrekeli.notificationservice.config.DltMessageSerializer
-      retries: 3
-    consumer:
-      group-id: ${spring.application.name}
-      autoOffsetReset: earliest
-      keyDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      valueDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-    properties:
-      spring.json.value.default.type: ru.gamrekeli.notificationservice.message.Message,ru.gamrekeli.notificationservice.model.User
-      spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
-      spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-
-kafka:
-  topics:
-    notification-topic: notification
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka/
+#
+#spring:
+#  main:
+#    allow-bean-definition-overriding: true
+#  application:
+#    name: notification-service
+#  kafka:
+#    bootstrap-servers: host.docker.internal:29092,host.docker.internal:29093
+#    listener:
+#      ack-mode: record
+#    producer:
+#      client-id: ${spring.application.name}
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: ru.gamrekeli.notificationservice.config.DltMessageSerializer
+#      retries: 3
+#    consumer:
+#      group-id: ${spring.application.name}
+#      autoOffsetReset: earliest
+#      keyDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#      valueDeserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#    properties:
+#      spring.json.value.default.type: ru.gamrekeli.notificationservice.message.Message,ru.gamrekeli.notificationservice.model.User
+#      spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+#      spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+#
+#kafka:
+#  topics:
+#    notification-topic: notification

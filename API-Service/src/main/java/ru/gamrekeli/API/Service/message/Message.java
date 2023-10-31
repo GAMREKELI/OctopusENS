@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Message {
+    private Long messageId;
     private User user;
     private String text;
     private Date time;

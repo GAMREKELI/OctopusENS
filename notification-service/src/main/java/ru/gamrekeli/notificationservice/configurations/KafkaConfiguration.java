@@ -27,6 +27,10 @@ public class KafkaConfiguration {
         return new KafkaTemplate<>(producerFactory);
     }
 
+
+    /**
+     * Настройка consumer для чтения из нескольких партиций одновременно
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory(
             DefaultErrorHandler defaultErrorHandler
@@ -35,6 +39,8 @@ public class KafkaConfiguration {
 
         kafkaListenerContainerFactory.setConsumerFactory(consumerFactory);
         kafkaListenerContainerFactory.setCommonErrorHandler(defaultErrorHandler);
+
+        // Указываем количество потоков
         kafkaListenerContainerFactory.setConcurrency(4);
         return kafkaListenerContainerFactory;
     }

@@ -1,5 +1,6 @@
 package ru.gamrekeli.API.Service.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,9 @@ public class APIController {
 
     @ResponseBody
     @PostMapping("/send/{userId}")
-    public ResponseEntity<Message> sendMessage(@PathVariable("userId") Long userId) throws UserNotFoundException {
+    public ResponseEntity<Message> sendMessage(@PathVariable("userId") Long userId) throws UserNotFoundException,
+            JsonProcessingException
+    {
 
         return new ResponseEntity<>(dangerEventsService.createDangerEvent(userId), HttpStatus.OK);
     }

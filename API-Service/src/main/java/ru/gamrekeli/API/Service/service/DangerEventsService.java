@@ -21,10 +21,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DangerEventsService {
 
-//    @Value("${topics.notification}")
-//    private String sendClientTopic;
-
-//    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private DangerEventsRepository dangerEventsRepository;

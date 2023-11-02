@@ -1,7 +1,9 @@
 package ru.gamrekeli.notificationservice.consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,39 +14,13 @@ import org.springframework.stereotype.Component;
 import ru.gamrekeli.notificationservice.message.Message;
 import ru.gamrekeli.notificationservice.model.User;
 
+import java.text.SimpleDateFormat;
+
 @Component
 @Slf4j
 @AllArgsConstructor
 public class KafkaConsumerListeners {
 
-//    @KafkaListener(
-//            id = "consumer-group-1",
-//            topics = "${kafka.topics.notification-topic}",
-//            containerFactory = "kafkaListenerContainerFactory"
-//    )
-//    public void handler1(@Payload Message message) {
-//        readMessage(message);
-//
-//    }
-//
-//    @KafkaListener(
-//            id = "consumer-group-2",
-//            topics = "${kafka.topics.notification-topic}",
-//            containerFactory = "kafkaListenerContainerFactory"
-//    )
-//    public void handler2(@Payload Message message) {
-//        readMessage(message);
-//    }
-//
-//    public void readMessage(Message message) {
-//        long number = message.getMessageId();
-//        String currentThreadName = Thread.currentThread().getName();
-//        log.info("Прочитано сообщение с номером: {} в потоке: {}", number, currentThreadName);
-//        if (number % 100 == 0) {
-//            log.info("Сообщение кратно 100");
-//            throw new RuntimeException("Получено сообщение с номером кратным 100");
-//        }
-//    }
     private static final String topicCreateOrder = "${topics.notification-topic}";
     private static final String kafkaConsumerGroupId = "${spring.kafka.consumer.group-id}";
 
@@ -54,14 +30,36 @@ public class KafkaConsumerListeners {
 
     @KafkaListener(
             topics = topicCreateOrder,
-            groupId = kafkaConsumerGroupId,
-            properties = {"spring.json.value.default.type=com.example.consumer.service.messaging.event.OrderEvent"}
+            groupId = kafkaConsumerGroupId + "1",
+            properties = {"spring.json.value.default.type=com.example.consumer.service.messaging.event.OrderEvent"},
+            containerFactory = "kafkaListenerContainerFactory"
     )
-    public void createMessage(String new_message) throws JsonProcessingException {
-        Message message = objectMapper.readValue(new_message, Message.class);
-        log.info("<<<<<<<<<<<<<<<<<" + message.getMessageId() +
-                message.getUser().toString() +
-                message.getText() + message.getTime() +
-                message.getUserList().toString() + ">>>>>>>>>>>>>>>>>>>>>");
+    public void handle(String new_message) throws JsonProcessingException{
+        createMessage(new_message);
+//        log.info("<<<<<<<<<<<" + new_message + ">>>>>>>>>>>>>>");
+    }
+
+    @KafkaListener(
+            topics = topicCreateOrder,
+            groupId = kafkaConsumerGroupId + "2",
+            properties = {"spring.json.value.default.type=com.example.consumer.service.messaging.event.OrderEvent"},
+            containerFactory = "kafkaListenerContainerFactory"
+    )
+    public void handle2(String new_message) throws JsonProcessingException{
+        createMessage(new_message);
+//        log.info("<<<<<<<<<<<" + new_message + ">>>>>>>>>>>>>>");
+    }
+
+    public void createMessage(String new_message) {
+        try {
+            System.out.println(new_message);
+            Message message = objectMapper.readValue(new_message, Message.class);
+            log.info("<<<<<<<<<<<<<<<<<" + message.getMessageId() +
+                    message.getUser().toString() +
+                    message.getText() + message.getTime() +
+                    message.getUserList().toString() + ">>>>>>>>>>>>>>>>>>>>>");
+        } catch (JsonProcessingException e) {
+            log.error("Error deserializing message");
+        }
     }
 }

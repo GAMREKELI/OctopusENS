@@ -13,10 +13,26 @@ spring:
   config:
     import: optional:configserver:http://localhost:8088
   kafka:
-    bootstrap-servers: localhost:29092,localhost:29093
+    bootstrap-servers: localhost:29092 #,localhost:29093
     consumer:
       group-id: "order-1"
       auto-offset-reset: earliest
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nekkimark2@gmail.com
+    password: eyefelyfhorhxkmw
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 
 topics:

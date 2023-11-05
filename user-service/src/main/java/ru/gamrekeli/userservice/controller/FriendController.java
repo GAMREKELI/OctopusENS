@@ -11,9 +11,10 @@ import ru.gamrekeli.userservice.service.FriendService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("/api/v1/friend")
+@RequestMapping("/api/v1/user")
 public class FriendController {
 
     @Autowired
@@ -21,6 +22,12 @@ public class FriendController {
 
     @ResponseBody
     @GetMapping("/{userId}")
+    public User showUser(@PathVariable("userId") Long userId) {
+        return friendService.getUser(userId);
+    }
+
+    @ResponseBody
+    @GetMapping("/friends/{userId}")
     public List<User> showFriends(@PathVariable("userId") Long userId) {
         return friendService.getFriends(userId);
     }

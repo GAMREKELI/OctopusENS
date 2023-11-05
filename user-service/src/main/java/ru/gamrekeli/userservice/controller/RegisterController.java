@@ -11,9 +11,9 @@ import ru.gamrekeli.userservice.service.UserService;
 
 
 @Controller
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/user")
 @AllArgsConstructor
-public class APIController {
+public class RegisterController {
 
     @Autowired
     private UserService userService;
@@ -23,14 +23,4 @@ public class APIController {
     public ResponseEntity<User> regTest(@RequestBody User user) {
         return new ResponseEntity<> (userService.save(user), HttpStatus.OK);
     }
-
-//    @ResponseBody
-//    @PostMapping("/send/{userId}")
-//    public ResponseEntity<Message> sendMessage(@PathVariable("userId") Long userId) throws UserNotFoundException,
-//            JsonProcessingException
-//    {
-//
-//        return new ResponseEntity<>(dangerEventsService.createDangerEvent(userId), HttpStatus.OK);
-//    }
-
 }

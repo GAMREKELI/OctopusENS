@@ -18,19 +18,6 @@ spring:
             add:
               type:
                 headers: false
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-    hibernate:
-      ddl-auto: update
-    database: mysql
-  datasource:
-    url: jdbc:mysql://localhost:3306/octopus
-    username: pdursley
-#    password: Q1234qwe #for Mac
-    password: Q1234qwe__ #for Linux
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
 eureka:
   client:
@@ -39,3 +26,13 @@ eureka:
 
 topics:
   notification-topic: notification
+
+request:
+  mapping: /api/v1/user
+
+endpoints:
+  show-user: ${request.mapping}/
+  show-friends: ${request.mapping}/friends/
+  show-subscribers: ${request.mapping}/subscribers/
+  add-friends: ${request.mapping}/add/
+  confirmation-friends: ${request.mapping}/confirm/

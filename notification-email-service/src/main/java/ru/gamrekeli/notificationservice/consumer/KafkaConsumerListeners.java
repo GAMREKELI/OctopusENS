@@ -40,7 +40,7 @@ public class KafkaConsumerListeners {
         try {
             System.out.println(new_message);
             Message message = objectMapper.readValue(new_message, Message.class);
-            emailService.senMessage(message);
+            emailService.sendMessage(message);
         } catch (JsonProcessingException e) {
             log.error("Error deserializing message");
         }

@@ -15,7 +15,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public void senMessage(Message message) {
+    public void sendMessage(Message message) {
         String subject = "Оповещение от " + message.getUser().getLogin();
         String body = "Ваш друг " + message.getUser().getFirstName() + " " + message.getUser().getLastName()
                 + ", нуждается в вашей помощи\n" +
@@ -28,7 +28,6 @@ public class EmailService {
     public void sendNewMail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
 
-//        message.setFrom("nekkimark2@gmail.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);

@@ -11,6 +11,7 @@ import ru.gamrekeli.userservice.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class FriendService {
@@ -50,6 +51,12 @@ public class FriendService {
             }
         }
         return listUsers;
+    }
+
+    public User getUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        return user.orElseGet(User::new);
     }
 
     public void addFriend(Long userId, Long friendId) throws NoSuchElementException{

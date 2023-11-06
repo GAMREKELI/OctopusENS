@@ -1,8 +1,7 @@
-package ru.gamrekeli.userservice.model;
+package ru.gamrekeli.API.Service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.Date;
 
 @Entity
@@ -15,7 +14,7 @@ import java.util.Date;
 @Table(
         name = "danger_events"
 )
-public class DangerEvents {
+public class DangerEvent {
 
     @Id
     @SequenceGenerator(
@@ -35,10 +34,9 @@ public class DangerEvents {
     )
     private Date time;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "user_id"
+    @Column(
+            name = "user_id",
+            nullable = false
     )
-    private User user;
-
+    private Long user;
 }

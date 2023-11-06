@@ -6,10 +6,8 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
 public class User {
-
     private Long userId;
     private String login;
     private String password;

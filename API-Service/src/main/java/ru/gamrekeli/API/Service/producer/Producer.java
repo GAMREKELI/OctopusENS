@@ -19,6 +19,9 @@ public class Producer {
     @Value("${topics.notification-topic}")
     private String sendClientTopic;
 
+//    @Value("${topics.danger-event}")
+//    private String sendDangerClientTopic;
+
     @Autowired
     private ObjectMapper objectMapper;
 

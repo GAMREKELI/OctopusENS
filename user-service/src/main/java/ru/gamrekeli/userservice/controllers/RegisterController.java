@@ -1,4 +1,4 @@
-package ru.gamrekeli.userservice.controller;
+package ru.gamrekeli.userservice.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.gamrekeli.userservice.model.User;
-import ru.gamrekeli.userservice.service.UserService;
+import ru.gamrekeli.userservice.entities.User;
+import ru.gamrekeli.userservice.services.UserService;
 
 
 @Controller
@@ -20,7 +20,7 @@ public class RegisterController {
 
     @ResponseBody
     @PostMapping("/registration")
-    public ResponseEntity<User> regTest(@RequestBody User user) {
+    public ResponseEntity<User> registration(@RequestBody User user) {
         return new ResponseEntity<> (userService.save(user), HttpStatus.OK);
     }
 }

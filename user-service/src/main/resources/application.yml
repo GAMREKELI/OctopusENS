@@ -6,18 +6,16 @@ spring:
     name: user-service
   config:
     import: optional:configserver:http://localhost:8088
-#  kafka:
-#    bootstrap-servers: localhost:29092 #,localhost:29093
-#    producer:
-#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-#      properties:
-#        acks: 1
-#        spring:
-#          json:
-#            add:
-#              type:
-#                headers: false
+  kafka:
+    bootstrap-servers: localhost:29093
+    consumer:
+      group-id: "order-2"
+      auto-offset-reset: earliest
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
   jpa:
     properties:
       hibernate:

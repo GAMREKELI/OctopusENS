@@ -19,9 +19,6 @@ public class Producer {
     @Value("${topics.notification-topic}")
     private String sendClientTopic;
 
-//    @Value("${topics.danger-event}")
-//    private String sendDangerClientTopic;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -29,10 +26,7 @@ public class Producer {
 
     public Message sendMessage(Message message) throws JsonProcessingException {
         String messageAsString = objectMapper.writeValueAsString(message);
-//        for (int i = 0; i < 10_000; i ++) {
-//            kafkaTemplate.send(sendClientTopic, messageAsString);
-//            log.info("Message send!");
-//        }
+
         kafkaTemplate.send(sendClientTopic, messageAsString);
         log.info("Message send!");
         return message;

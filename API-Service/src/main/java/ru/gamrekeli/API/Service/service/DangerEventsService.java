@@ -51,10 +51,22 @@ public class DangerEventsService {
 
         List<User> friends;
         friends = userClient.showFriends(userId);
+        int i = 0;
+        while (i < 10_000) {
+            producer.sendMessage(Message.builder()
+                    .messageId(dangerEvents.getDangerId())
+                    .user(user)
+                    .text("Лошара")
+                    .time(time)
+                    .userList(friends)
+                    .build());
+            i ++;
+        }
         return producer.sendMessage(Message.builder()
                 .messageId(dangerEvents.getDangerId())
                 .user(user)
-                .text("Тестовое сообщение")
+//                .text("Тестовое сообщение")
+                .text("Лошара")
                 .time(time)
                 .userList(friends)
                 .build());

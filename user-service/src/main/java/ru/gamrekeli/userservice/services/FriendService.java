@@ -1,12 +1,12 @@
-package ru.gamrekeli.userservice.service;
+package ru.gamrekeli.userservice.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.gamrekeli.userservice.model.FriendShip;
-import ru.gamrekeli.userservice.model.User;
-import ru.gamrekeli.userservice.model.status.Status;
-import ru.gamrekeli.userservice.repository.FriendShipRepository;
-import ru.gamrekeli.userservice.repository.UserRepository;
+import ru.gamrekeli.userservice.entities.FriendShip;
+import ru.gamrekeli.userservice.entities.User;
+import ru.gamrekeli.userservice.entities.status.Status;
+import ru.gamrekeli.userservice.repositories.FriendShipRepository;
+import ru.gamrekeli.userservice.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

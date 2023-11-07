@@ -1,17 +1,16 @@
-package ru.gamrekeli.userservice.controller;
+package ru.gamrekeli.userservice.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.gamrekeli.userservice.model.FriendShip;
-import ru.gamrekeli.userservice.model.User;
-import ru.gamrekeli.userservice.service.FriendService;
+import ru.gamrekeli.userservice.entities.FriendShip;
+import ru.gamrekeli.userservice.entities.User;
+import ru.gamrekeli.userservice.services.FriendService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/v1/user")

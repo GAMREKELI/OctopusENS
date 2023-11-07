@@ -1,4 +1,4 @@
-package ru.gamrekeli.userservice.model;
+package ru.gamrekeli.userservice.entities;
 
 
 import jakarta.persistence.*;

@@ -68,4 +68,10 @@ public class User {
 
     )
     private String phoneNumber;
+
+    @Column(
+            name = "role",
+            nullable = false
+    )
+    private String role;
 }

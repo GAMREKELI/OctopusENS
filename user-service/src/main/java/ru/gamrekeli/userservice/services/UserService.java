@@ -20,6 +20,7 @@ public class UserService {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
+                .role("USER") // Static
                 .build();
         userRepository.save(newUser);
         return newUser;

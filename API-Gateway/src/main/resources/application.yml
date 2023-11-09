@@ -8,15 +8,26 @@ spring:
     import: optional:configserver:http://localhost:8088
   cloud:
     gateway:
-#      routes:
-#        - id: api-service
-#          uri: http://127.0.0.1:8081
-#          predicates:
-#            - Path=/api/v1/send/**
-#        - id: user-service
-#          uri: http://127.0.0.1:8082
-#          predicates:
-#            - Path=/api/v1/user/**
+      routes:
+        - id: api-service
+          uri: http://127.0.0.1:8081
+          predicates:
+            - Path=/api/v1/send/**
+          filters:
+            - AuthenticationFilter
+
+        - id: user-service
+          uri: http://127.0.0.1:8082
+          predicates:
+            - Path=/api/v1/user/**
+          filters:
+            - AuthenticationFilter
+
+        - id: auth-service
+          uri: http://127.0.0.1:9000
+          predicates:
+            - Path=/auth/**
+
       discovery:
         locator:
           enabled: true
@@ -27,4 +38,4 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 jwt:
-  secret: MiAVzqUXy5Tfr1kVIGpPMiAVzqUXy5Tfr1kVIGpP
+  secret: 548DC890C4B6535BDF6F2D5199C5CFBA22041086DBD5052FEBAFD9E3A0321F69

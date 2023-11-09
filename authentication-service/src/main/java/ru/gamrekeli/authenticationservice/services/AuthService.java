@@ -1,42 +1,38 @@
 package ru.gamrekeli.authenticationservice.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.gamrekeli.authenticationservice.entities.AuthRequest;
-import ru.gamrekeli.authenticationservice.entities.AuthResponse;
 import ru.gamrekeli.authenticationservice.entities.User;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class AuthService {
+    @Autowired
+    private RestTemplate restTemplate;
 
-    private final JwtUtil jwtUtil;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-//    private final UserClient userClient;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    private final RestTemplate restTemplate;
+    public String register(User request) {
 
-
-    public AuthResponse register(AuthRequest request) {
-
-        request.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
-        System.out.println(request.toString());
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         User registeredUser = restTemplate.postForObject("http://user-service/api/v1/user/registration", request, User.class);
-//        User registeredUser = userClient.registration(request).getBody();
 
-
-
-        log.info("<<<<<<<<<<<<<<<" + registeredUser.getUserId().toString() + " " + registeredUser.getUserId().toString() + ">>>>>>>>>>>>>>>>>>");
-
-        String accessToken = jwtUtil.generate(registeredUser.getUserId().toString(), registeredUser.getRole(), "ACCESS");
-        String refreshToken = jwtUtil.generate(registeredUser.getUserId().toString(), registeredUser.getRole(), "REFRESH");
-
-//        log.info("<<<<<<<<<<<<<<<" + accessToken + " " + refreshToken + ">>>>>>>>>>>>>>>>>>");
-        return new AuthResponse(accessToken, refreshToken);
+        return "user added to the system";
     }
+
+    public String generateToken(String login) {
+        return jwtUtil.generateToken(login);
+    }
+
+    public void validateToken(String token) {
+        jwtUtil.validateToken(token);
+    }
+
 }

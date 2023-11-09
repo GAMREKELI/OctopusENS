@@ -24,8 +24,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 jwt:
-  secret: MiAVzqUXy5Tfr1kVIGpPMiAVzqUXy5Tfr1kVIGpP
-  expiration: 86400
+  secret: 548DC890C4B6535BDF6F2D5199C5CFBA22041086DBD5052FEBAFD9E3A0321F69
 
 #topics:
 #  registration: registration

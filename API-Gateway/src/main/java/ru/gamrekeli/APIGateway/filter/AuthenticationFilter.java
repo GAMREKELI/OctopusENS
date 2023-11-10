@@ -13,7 +13,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     @Autowired
     private RouteValidator routeValidator;
-    
+
     @Autowired
     private JwtUtil jwtUtil;
 

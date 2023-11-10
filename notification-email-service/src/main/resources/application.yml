@@ -38,5 +38,5 @@ spring:
 
 
 topics:
-  notification-topic: mail
+  notification-topic: send
 

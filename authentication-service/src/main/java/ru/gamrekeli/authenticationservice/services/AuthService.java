@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.gamrekeli.authenticationservice.dto.AuthRequest;
 import ru.gamrekeli.authenticationservice.entities.User;
 
 @Service
@@ -19,10 +20,19 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public String register(User request) {
+    public String register(AuthRequest request) {
 
         request.setPassword(passwordEncoder.encode(request.getPassword()));
-        User registeredUser = restTemplate.postForObject("http://user-service/api/v1/user/registration", request, User.class);
+        User user = User.builder()
+                .login(request.getLogin())
+                .password(request.getPassword())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .role("USER") // fix
+                .build();
+        User registeredUser = restTemplate.postForObject("http://user-service/api/v1/user/registration", user, User.class);
 
         return "user added to the system";
     }

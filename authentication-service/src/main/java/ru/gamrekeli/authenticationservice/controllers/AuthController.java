@@ -22,7 +22,7 @@ public class AuthController {
     private AuthenticationManager manager;
 
     @PostMapping("/registration")
-    public String registration(@RequestBody User request) {
+    public String registration(@RequestBody AuthRequest request) {
         return authService.register(request);
     }
 

@@ -3,6 +3,7 @@ package ru.gamrekeli.API.Service.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.gamrekeli.API.Service.client.UserClient;
@@ -28,6 +29,9 @@ public class DangerEventsService {
 
     @Autowired
     private UserClient userClient;
+
+    @Value("${topics.notification-topic}")
+    private String sendClientTopic;
 
     public Message createDangerEvent(Long userId) throws UserNotFoundException,
             JsonProcessingException
@@ -58,6 +62,6 @@ public class DangerEventsService {
                 .text("Тестовое сообщение")
                 .time(time)
                 .userList(friends)
-                .build());
+                .build(), sendClientTopic);
     }
 }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import ru.gamrekeli.API.Service.message.Message;
@@ -16,15 +15,12 @@ import ru.gamrekeli.API.Service.message.Message;
 @Slf4j
 public class Producer {
 
-    @Value("${topics.notification-topic}")
-    private String sendClientTopic;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+//    @Autowired
+    private final ObjectMapper objectMapper;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public Message sendMessage(Message message) throws JsonProcessingException {
+    public Message sendMessage(Message message, String sendClientTopic) throws JsonProcessingException {
         String messageAsString = objectMapper.writeValueAsString(message);
 
         kafkaTemplate.send(sendClientTopic, messageAsString);

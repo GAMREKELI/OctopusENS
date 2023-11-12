@@ -28,8 +28,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/danger
     username: pdursley
-    #    password: Q1234qwe #for Mac
-    password: Q1234qwe__ #for Linux
+    password: Q1234qwe
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 eureka:

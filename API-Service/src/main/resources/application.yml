@@ -21,15 +21,15 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
       ddl-auto: update
-    database: mysql
+    database: postgresql
   datasource:
-    url: jdbc:mysql://localhost:3306/danger
+    url: jdbc:postgresql://localhost:5432/danger
     username: pdursley
     password: Q1234qwe
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
 
 eureka:
   client:

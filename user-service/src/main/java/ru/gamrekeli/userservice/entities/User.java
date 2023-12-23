@@ -19,14 +19,8 @@ import lombok.*;
 )
 public class User {
     @Id
-    @SequenceGenerator(
-            name = "sequence_user",
-            sequenceName = "sequence_user",
-            allocationSize = 1
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "sequence_user"
+            strategy = GenerationType.IDENTITY
     )
     private Long userId;
 

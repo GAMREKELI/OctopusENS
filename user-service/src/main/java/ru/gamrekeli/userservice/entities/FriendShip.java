@@ -17,13 +17,8 @@ import ru.gamrekeli.userservice.entities.status.Status;
 public class FriendShip {
 
     @Id
-    @SequenceGenerator(
-            name = "sequence_friend",
-            sequenceName = "sequence_friend",
-            allocationSize = 1
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE
+            strategy = GenerationType.IDENTITY
     )
     private Long friendShipId;
 

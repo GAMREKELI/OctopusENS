@@ -97,7 +97,18 @@
 			<version>1.19.1</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+
+		<dependency>
             <groupId>ru.gamrekeli</groupId>
             <artifactId>notification-email-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>

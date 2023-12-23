@@ -1,5 +1,6 @@
 package ru.gamrekeli.API.Service.model;
 
+
 import lombok.*;
 
 @Getter
@@ -15,4 +16,5 @@ public class User {
     private String lastName;
     private String email;
     private String phoneNumber;
+
 }

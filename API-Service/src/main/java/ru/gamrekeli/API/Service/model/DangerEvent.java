@@ -17,14 +17,8 @@ import java.util.Date;
 public class DangerEvent {
 
     @Id
-    @SequenceGenerator(
-            name = "sequence_danger",
-            sequenceName = "sequence_danger",
-            allocationSize = 1
-    )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "sequence_danger"
+            strategy = GenerationType.IDENTITY
     )
     private Long dangerId;
 

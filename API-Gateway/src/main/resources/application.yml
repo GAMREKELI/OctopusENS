@@ -1,3 +1,8 @@
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
+
 server:
   port: 9090
 
@@ -27,6 +32,13 @@ spring:
           uri: http://127.0.0.1:9000
           predicates:
             - Path=/auth/**
+
+        - id: health-check
+          uri: http://127.0.0.1:8082 # Используем базовый URL, без /actuator
+          predicates:
+            - Path=/health/user-service/**
+          filters:
+            - RewritePath=/health/user-service/(?<remaining>.*), /actuator/${remaining}
 
       discovery:
         locator:

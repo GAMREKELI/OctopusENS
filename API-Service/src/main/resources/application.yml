@@ -56,7 +56,7 @@ redis:
   password: 12345678
 
 user-service:
-  health-endpoint: http://user-service/actuator/health
+  health-endpoint: http://localhost:9090/health/user-service/health
 
 management:
   endpoints:

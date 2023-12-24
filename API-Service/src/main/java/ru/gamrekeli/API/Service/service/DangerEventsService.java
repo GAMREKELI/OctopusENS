@@ -2,6 +2,7 @@ package ru.gamrekeli.API.Service.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -12,17 +13,17 @@ import ru.gamrekeli.API.Service.producer.Producer;
 import ru.gamrekeli.API.Service.message.Message;
 import ru.gamrekeli.API.Service.model.DangerEvent;
 import ru.gamrekeli.API.Service.model.User;
-//import ru.gamrekeli.API.Service.service.exceptions.UserNotFoundException;
 import ru.gamrekeli.API.Service.repository.DangerEventRepository;
 import java.util.Date;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DangerEventsService {
 
-    @Autowired //
-    private Producer producer; //
+    @Autowired
+    private Producer producer;
 
     @Autowired
     private DangerEventRepository dangerEventRepository;
@@ -46,18 +47,12 @@ public class DangerEventsService {
         boolean checkService = userServiceChecker.isUserServiceAvailable();
         if (checkService) {
             user = userClient.showUser(userId);
-//            if (user.getLogin().isEmpty()) {
-//                throw new UserNotFoundException("Пользователь с id " + userId + " не найден");
-//            }
             redisTemplate.opsForValue().set("user_" + userId, user); // проверяем кеш на наличие пользователя
 
         }
         else {
-            System.out.println("<<<<<<<<<<<<<<<<<<<<< Значение пользователя нету! >>>>>>>>>>>>>>>>>>>>>>");
+            log.info("<<<<<<<<<<<<<<<<<<<<< Значение пользователя нету! >>>>>>>>>>>>>>>>>>>>>");
             user = (User) redisTemplate.opsForValue().get("user_" + userId);
-//            if (user == null) {
-//                throw new UserNotFoundException("Пользователь не найден");
-//            }
         }
 
         Date time = new Date();
@@ -69,7 +64,7 @@ public class DangerEventsService {
         try {
             dangerEventRepository.save(dangerEvents);
         } catch (DataAccessException e) {
-            System.out.println("Невозможно добавить событие об опасности");
+            log.info("Невозможно добавить событие об опасности");
         }
 
         List<User> friends;
@@ -78,7 +73,7 @@ public class DangerEventsService {
             redisTemplate.opsForValue().set("friends_" + userId, friends);
         }
         else {
-            System.out.println("<<<<<<<<<<<<<<<<<<<<< Значений друзей нету! >>>>>>>>>>>>>>>>>>>>>>");
+            log.info("<<<<<<<<<<<<<<<<<<<<< Значений друзей нету! >>>>>>>>>>>>>>>>>>>>>");
             friends = (List<User>) redisTemplate.opsForValue().get("friends_" + userId);
         }
         return producer.sendMessage(Message.builder()

@@ -49,3 +49,17 @@ endpoints:
   show-subscribers: ${request.mapping}/subscribers/
   add-friends: ${request.mapping}/add/
   confirmation-friends: ${request.mapping}/confirm/
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: 12345678
+
+user-service:
+  health-endpoint: http://localhost:9090/health/user-service/health
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

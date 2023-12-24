@@ -1,0 +1,28 @@
+{
+  "user" : [
+    {
+      "login": "pdursley",
+      "password": "Q1234qwe",
+      "firstName": "Nikita",
+      "lastName": "Gamrekeli",
+      "email": "nekkimark2@gmail.com",
+      "phoneNumber": "+79105988089"
+    },
+    {
+      "login": "testUser",
+      "password": "Q1234qwe",
+      "firstName": "Фёдор",
+      "lastName": "Дпаноа",
+      "email": "gamrekelino@gmail.com",
+      "phoneNumber": "911"
+    },
+    {
+      "login": "IvanEmae",
+      "password": "Q1234qwe",
+      "firstName": "Михаил",
+      "lastName": "Иванов",
+      "email": "IvanM@mail.ru",
+      "phoneNumber": "+88005553535"
+    }
+  ]
+}

@@ -9,10 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.gamrekeli.API.Service.message.Message;
 import ru.gamrekeli.API.Service.service.DangerEventsService;
-import ru.gamrekeli.API.Service.service.exceptions.UserNotFoundException;
 
 @Controller
-@RequestMapping("/api/v1/send/")
+@RequestMapping("/api/v1/send")
 @AllArgsConstructor
 public class APIController {
 
@@ -21,7 +20,7 @@ public class APIController {
 
     @ResponseBody
     @PostMapping("/{userId}")
-    public ResponseEntity<Message> sendMessage(@PathVariable("userId") Long userId) throws UserNotFoundException,
+    public ResponseEntity<Message> sendMessage(@PathVariable("userId") Long userId) throws
             JsonProcessingException
     {
         return new ResponseEntity<>(dangerEventsService.createDangerEvent(userId), HttpStatus.OK);

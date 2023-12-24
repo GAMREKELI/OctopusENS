@@ -1,19 +1,19 @@
-package ru.gamrekeli.userservice.services;
+package ru.gamrekeli.userservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.gamrekeli.userservice.entities.User;
-import ru.gamrekeli.userservice.entities.UserRequest;
-import ru.gamrekeli.userservice.repositories.UserRepository;
+import ru.gamrekeli.userservice.entity.User;
+import ru.gamrekeli.userservice.repository.UserRepository;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
 
+    @Override
     public User save(User user) {
 
         User newUser = User.builder()
@@ -29,6 +29,7 @@ public class UserService {
         return newUser;
     }
 
+    @Override
     public Optional<User> getUser(User user) {
         Optional<User> userFromDb = userRepository.findByLogin(user.getLogin());
 //        if (userFromDb.isEmpty()) {

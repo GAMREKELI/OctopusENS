@@ -1,12 +1,12 @@
-package ru.gamrekeli.userservice.services;
+package ru.gamrekeli.userservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.gamrekeli.userservice.entities.FriendShip;
-import ru.gamrekeli.userservice.entities.User;
-import ru.gamrekeli.userservice.entities.status.Status;
-import ru.gamrekeli.userservice.repositories.FriendShipRepository;
-import ru.gamrekeli.userservice.repositories.UserRepository;
+import ru.gamrekeli.userservice.entity.FriendShip;
+import ru.gamrekeli.userservice.entity.User;
+import ru.gamrekeli.userservice.entity.status.Status;
+import ru.gamrekeli.userservice.repository.FriendShipRepository;
+import ru.gamrekeli.userservice.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-public class FriendService {
+public class FriendServiceImpl implements FriendService {
 
     @Autowired
     private UserRepository userRepository;
@@ -22,6 +22,7 @@ public class FriendService {
     @Autowired
     private FriendShipRepository friendShipRepository;
 
+    @Override
     public List<User> getSubscribers(Long userId) {
         List<User> listUsers = new ArrayList<>();
 
@@ -35,6 +36,7 @@ public class FriendService {
         return listUsers;
     }
 
+    @Override
     public List<User> getFriends(Long userId) {
         List<User> listUsers = new ArrayList<>();
 
@@ -53,12 +55,14 @@ public class FriendService {
         return listUsers;
     }
 
+    @Override
     public User getUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
 
         return user.orElseGet(User::new);
     }
 
+    @Override
     public void addFriend(Long userId, Long friendId) throws NoSuchElementException{
         friendShipRepository.save(
                 FriendShip.builder()
@@ -69,6 +73,7 @@ public class FriendService {
         );
     }
 
+    @Override
     public void confirmationAddFriend(Long userId, Long friendId)  {
         friendShipRepository.confirmationAddFriend(userId, friendId);
     }

@@ -7,14 +7,13 @@ import org.springframework.stereotype.Service;
 import ru.gamrekeli.notificationservice.message.Message;
 import ru.gamrekeli.notificationservice.model.User;
 
-import java.util.logging.Logger;
-
 @Service
-public class EmailService {
+public class EmailService implements SendMessage {
 
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Override
     public void sendMessage(Message message) {
         String subject = "Оповещение от " + message.getUser().getLogin();
         String body = "Ваш друг " + message.getUser().getFirstName() + " " + message.getUser().getLastName()

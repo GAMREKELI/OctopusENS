@@ -26,9 +26,9 @@ spring:
       ddl-auto: update
     database: postgresql
   datasource:
-    url: jdbc:postgresql://localhost:5432/danger
-    username: pdursley
-    password: Q1234qwe
+    url: jdbc:postgresql://localhost:5433/danger
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
 eureka:
@@ -38,7 +38,6 @@ eureka:
 
 topics:
   notification-topic: send
-#  danger-event: danger
 
 request:
   mapping: /api/v1/user

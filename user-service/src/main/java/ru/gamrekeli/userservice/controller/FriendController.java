@@ -49,11 +49,23 @@ public class FriendController {
     }
 
     @ResponseBody
+    @PostMapping("/delete/{userId}/{friendId}")
+    public ResponseEntity<?> deleteFriend(@PathVariable("userId") Long userId,
+                                          @PathVariable("friendId") Long friendId) {
+        int response = friendServiceImpl.deleteFriend(userId, friendId);
+        if (response != 0) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ResponseBody
     @PostMapping("/confirm/{userId}/{friendId}")
     public ResponseEntity<FriendShip> confirmationAddFriend(@PathVariable("userId") Long userId,
                                                             @PathVariable("friendId") Long friendId) {
-        if (!userId.equals(friendId)) {
-            friendServiceImpl.confirmationAddFriend(userId, friendId);
+        int response = friendServiceImpl.confirmationAddFriend(userId, friendId);
+        if (response != 0) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

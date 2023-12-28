@@ -1,5 +1,6 @@
 package ru.gamrekeli.userservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.gamrekeli.userservice.entity.FriendShip;
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class FriendServiceImpl implements FriendService {
 
     @Autowired
@@ -74,7 +76,32 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void confirmationAddFriend(Long userId, Long friendId)  {
-        friendShipRepository.confirmationAddFriend(userId, friendId);
+    public int confirmationAddFriend(Long userId, Long friendId)  {
+        if (!userId.equals(friendId)) {
+            int countForDelete = friendShipRepository.confirmationAddFriend(userId, friendId);
+            if (countForDelete == 0) {
+                log.info("<<<<<<<<<<<<<<<<<<<<<<" + " userId или friendId отсутствуют в базе " + ">>>>>>>>>>>>>>>>>>>>>>");
+                return 0;
+            } else {
+                log.info("<<<<<<<<<<<<<<<<<<<<<<" + " Добавление в друзья прошло успешно " + ">>>>>>>>>>>>>>>>>>>>>>");
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int deleteFriend(Long userId, Long friendId) {
+        if (!userId.equals(friendId)) {
+            int countForDelete = friendShipRepository.deleteFriend(userId, friendId);
+            if (countForDelete == 0) {
+                log.info("<<<<<<<<<<<<<<<<<<<<<<" + " userId или friendId отсутствуют в базе " + ">>>>>>>>>>>>>>>>>>>>>>");
+                return 0;
+            } else {
+                log.info("<<<<<<<<<<<<<<<<<<<<<<" + " Удаление прошло успешно " + ">>>>>>>>>>>>>>>>>>>>>>");
+                return 1;
+            }
+        }
+        return 0;
     }
 }

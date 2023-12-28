@@ -9,5 +9,6 @@ public interface FriendService {
     List<User> getFriends(Long userId);
     User getUser(Long userId);
     void addFriend(Long userId, Long friendId) throws NoSuchElementException;
-    void confirmationAddFriend(Long userId, Long friendId);
+    int confirmationAddFriend(Long userId, Long friendId);
+    int deleteFriend(Long userId, Long friendId);
 }

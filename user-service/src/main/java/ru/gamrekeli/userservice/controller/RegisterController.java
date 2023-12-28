@@ -1,4 +1,4 @@
-package ru.gamrekeli.userservice.controllers;
+package ru.gamrekeli.userservice.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.gamrekeli.userservice.entities.User;
-import ru.gamrekeli.userservice.services.UserService;
+import ru.gamrekeli.userservice.entity.User;
+import ru.gamrekeli.userservice.service.UserServiceImpl;
 
 import java.util.Optional;
 
@@ -20,12 +20,12 @@ import java.util.Optional;
 public class RegisterController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @ResponseBody
     @PostMapping("/registration")
     public ResponseEntity<User> registration(@RequestBody User user) {
-        return new ResponseEntity<> (userService.save(user), HttpStatus.OK);
+        return new ResponseEntity<> (userServiceImpl.save(user), HttpStatus.OK);
     }
 
 //    @ResponseBody
@@ -38,6 +38,6 @@ public class RegisterController {
     @ResponseBody
     @PostMapping("/login")
     public ResponseEntity<Optional<User>> login(@RequestBody User user) {
-        return new ResponseEntity<> (userService.getUser(user), HttpStatus.OK);
+        return new ResponseEntity<> (userServiceImpl.getUser(user), HttpStatus.OK);
     }
 }

@@ -1,3 +1,9 @@
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.http: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG
+
 server:
   port: 8083
 
@@ -24,9 +30,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-#    username: nekkimark2@gmail.com
     username: gamrekelino@gmail.com
-#    password: eyefelyfhorhxkmw
     password: bilt zilg nclk gofe
     properties:
       mail:

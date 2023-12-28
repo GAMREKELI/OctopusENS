@@ -44,12 +44,27 @@ public class DangerEventsService {
             JsonProcessingException
     {
         User user;
+        /*
+            Проверяем, что сервис user-service работоспособен и может вернуть данные,
+            если сервис недоступен, то данные берутся из кэша.
+        */
         boolean checkService = userServiceChecker.isUserServiceAvailable();
+        /*
+            checkService == true -> сервис user-service способен вернуть данные,
+            следовательно обращаемся к этому сервису.
+        */
         if (checkService) {
             user = userClient.showUser(userId);
-            redisTemplate.opsForValue().set("user_" + userId, user); // проверяем кеш на наличие пользователя
+            /*
+                Обновляем данные кэша
+            */
+            redisTemplate.opsForValue().set("user_" + userId, user);
 
         }
+        /*
+            checkService == false -> сервис user-service НЕ способен вернуть данные,
+            следовательно обращаемся к кэшу.
+        */
         else {
             log.info("<<<<<<<<<<<<<<<<<<<<< Значение пользователя нету! >>>>>>>>>>>>>>>>>>>>>");
             user = (User) redisTemplate.opsForValue().get("user_" + userId);

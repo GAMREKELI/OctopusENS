@@ -1,4 +1,77 @@
 services:
+#  service-db:
+#    image: postgres:14.7-alpine
+#    environment:
+#      POSTGRES_USER: users
+#      POSTGRES_PASSWORD: yc6D9oay
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - ./infrastructure/db/create_db_users.sql:/docker-entrypoint-initdb.d/create_db_users.sql
+#      - ./infrastructure/db/create_db_danger.sql:/docker-entrypoint-initdb.d/create_db_danger.sql
+#      - db-data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U habrpguser -d habrdb" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 10s
+#    restart: unless-stopped
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 4G
+#
+#  pgadmin:
+#    container_name: pgadmin4_container
+#    image: dpage/pgadmin4:7
+#    restart: always
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+#      PGADMIN_DEFAULT_PASSWORD: root
+#    ports:
+#      - "5050:80"
+#    volumes:
+#      - pgadmin-data:/var/lib/pgadmin
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - ./infrastructure/db/create_db_users.sql:/docker-entrypoint-initdb.d/create_db_users.sql
+      - ./infrastructure/db/create_db_danger.sql:/docker-entrypoint-initdb.d/create_db_danger.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U habrpguser -d habrdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "5433:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mymail.ru
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+    ports:
+      - 5050:80
+    networks:
+      - postgres
+    restart: unless-stopped
 
   redis:
     image: redis:latest
@@ -77,3 +150,11 @@ services:
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:9092 --list
       "
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:

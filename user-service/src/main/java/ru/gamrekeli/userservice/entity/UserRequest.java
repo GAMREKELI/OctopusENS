@@ -1,4 +1,4 @@
-package ru.gamrekeli.userservice.entities;
+package ru.gamrekeli.userservice.entity;
 
 
 import lombok.AllArgsConstructor;

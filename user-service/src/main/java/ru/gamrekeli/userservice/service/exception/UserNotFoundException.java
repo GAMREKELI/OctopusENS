@@ -1,4 +1,4 @@
-package ru.gamrekeli.API.Service.service.exceptions;
+package ru.gamrekeli.userservice.service.exception;
 
 public class UserNotFoundException extends Exception{
     public UserNotFoundException(String message) {

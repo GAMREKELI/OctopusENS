@@ -31,9 +31,9 @@ spring:
       ddl-auto: update
     database: postgresql
   datasource:
-    url: jdbc:postgresql://localhost:5432/users
-    username: pdursley
-    password: Q1234qwe
+    url: jdbc:postgresql://localhost:5433/users
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
 eureka:

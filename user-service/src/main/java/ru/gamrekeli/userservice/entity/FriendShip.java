@@ -1,8 +1,8 @@
-package ru.gamrekeli.userservice.entities;
+package ru.gamrekeli.userservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.gamrekeli.userservice.entities.status.Status;
+import ru.gamrekeli.userservice.entity.status.Status;
 
 @Entity
 @Data

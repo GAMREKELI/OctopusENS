@@ -11,12 +11,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -50,45 +53,66 @@ class FriendControllerTest {
         postgresContainer.stop();
     }
 
-//    @Test
-//    void showUser() {
-//    }
-//
-//    @Test
-//    void showFriends() {
-//    }
-//
-//    @Test
-//    void showSubscribers() {
-//    }
-//
-//    @Test
-//    void addFriend() {
-//    }
+    @Test
+    void showUser() throws Exception{
+        String response = """
+                {
+                "userId": 1,
+                    "login": "Ivan",
+                    "password": "$2y$10$7EvloDO2IuIeqJ82kMfKleK14iJL95wFVhvPY2rAxljpOV2Ih9sky",
+                    "firstName": "Иван",
+                    "lastName": "Тестовый",
+                    "email": "test@gmail.com",
+                    "phoneNumber": "+79105988089",
+                    "role": "USER"
+                }
+                """;
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/{userId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+//                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+//                .andExpect(content().json(response));
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/user/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        System.out.println("Response content: " + content);
+
+    }
 
     @Test
     void deleteFriend() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/delete/{userId}/{friendId}", 1L, 2L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/delete/{userId}/{friendId}", 1L, 3L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/delete/{userId}/{friendId}", 1L, 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/delete/{userId}/{friendId}", 228L, 1337L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void confirmationAddFriend() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/confirm/{userId}/{friendId}", 3L, 2L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/confirm/{userId}/{friendId}", 2L, 4L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/confirm/{userId}/{friendId}", 4L, 5L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/confirm/{userId}/{friendId}", 1L, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(status().isBadRequest());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user/confirm/{userId}/{friendId}", 1L, 2L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(status().isBadRequest());
     }
 }

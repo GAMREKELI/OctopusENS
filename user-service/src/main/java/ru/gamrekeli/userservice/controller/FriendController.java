@@ -57,7 +57,6 @@ public class FriendController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
 
     @ResponseBody

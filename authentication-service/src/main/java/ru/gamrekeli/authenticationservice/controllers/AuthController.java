@@ -13,6 +13,7 @@ import ru.gamrekeli.authenticationservice.services.AuthService;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = {"http://localhost:5173"})
 @Slf4j
 public class AuthController {
 

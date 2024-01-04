@@ -13,6 +13,14 @@ spring:
     import: optional:configserver:http://localhost:8088
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
       routes:
         - id: api-service
           uri: http://127.0.0.1:8081
@@ -34,7 +42,7 @@ spring:
             - Path=/auth/**
 
         - id: health-check
-          uri: http://127.0.0.1:8082 # Используем базовый URL, без /actuator
+          uri: http://127.0.0.1:8082
           predicates:
             - Path=/health/user-service/**
           filters:

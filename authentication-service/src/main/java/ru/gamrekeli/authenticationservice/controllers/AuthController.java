@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.gamrekeli.authenticationservice.dto.AuthRequest;
+import ru.gamrekeli.authenticationservice.dto.AuthorizationRequest;
 import ru.gamrekeli.authenticationservice.entities.User;
 import ru.gamrekeli.authenticationservice.services.AuthService;
 
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public String getToken(@RequestBody AuthRequest request) {
+    public String getToken(@RequestBody AuthorizationRequest request) {
         Authentication authentication = manager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getLogin(), request.getPassword()));
 

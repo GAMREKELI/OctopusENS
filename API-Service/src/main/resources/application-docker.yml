@@ -2,14 +2,12 @@ server:
   port: 8081
 
 spring:
-  profiles:
-    active: docker
   application:
     name: api-service
   config:
     import: optional:configserver:http://localhost:8088
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: kafka:29092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -28,7 +26,7 @@ spring:
       ddl-auto: update
     database: postgresql
   datasource:
-    url: jdbc:postgresql://localhost:5433/danger
+    url: jdbc:postgresql://postgres:5432/danger
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -36,7 +34,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://registry-service:8761/eureka/
 
 topics:
   notification-topic: send
@@ -57,7 +55,7 @@ redis:
   password: 12345678
 
 user-service:
-  health-endpoint: http://localhost:9090/health/user-service/health
+  health-endpoint: http://api-gateway:9090/health/user-service/health
 
 management:
   endpoints:

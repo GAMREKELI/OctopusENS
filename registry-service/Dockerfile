@@ -1,7 +1,6 @@
 FROM maven:3.8.3-openjdk-17 AS build
 
-COPY ./target/API-Service-0.0.1-SNAPSHOT.jar ./app.jar
-
+COPY ./target/registry-service-0.0.1-SNAPSHOT.jar ./app.jar
 #WORKDIR /app
 #
 #COPY pom.xml .
@@ -14,9 +13,9 @@ COPY ./target/API-Service-0.0.1-SNAPSHOT.jar ./app.jar
 #
 #FROM openjdk:17
 #WORKDIR /app
-#COPY --from=build /app/target/API-Service-0.0.1-SNAPSHOT.jar /app
+#COPY --from=build /app/target/registry-service-0.0.1-SNAPSHOT.jar /app
 
-EXPOSE 8081
+EXPOSE 8761
 
-#CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "API-Service-0.0.1-SNAPSHOT.jar"]
+#CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "registry-service-0.0.1-SNAPSHOT.jar"]
 CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "app.jar"]

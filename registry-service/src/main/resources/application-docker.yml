@@ -2,14 +2,12 @@ server:
   port: 8761
 
 spring:
-  profiles:
-    active: docker
   application:
     name: registry-service
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: registry-service
   client:
     register-with-eureka: false
     fetch-registry: false

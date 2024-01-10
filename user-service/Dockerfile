@@ -1,9 +1,8 @@
 FROM maven:3.8.3-openjdk-17 AS build
 
-COPY ./target/API-Service-0.0.1-SNAPSHOT.jar ./app.jar
-
+COPY ./target/user-service-0.0.1-SNAPSHOT.jar ./app.jar
 #WORKDIR /app
-#
+
 #COPY pom.xml .
 #RUN mvn dependency:go-offline
 #
@@ -14,9 +13,9 @@ COPY ./target/API-Service-0.0.1-SNAPSHOT.jar ./app.jar
 #
 #FROM openjdk:17
 #WORKDIR /app
-#COPY --from=build /app/target/API-Service-0.0.1-SNAPSHOT.jar /app
+#COPY --from=build /app/target/user-service-0.0.1-SNAPSHOT.jar /app
 
-EXPOSE 8081
+EXPOSE 8082
 
-#CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "API-Service-0.0.1-SNAPSHOT.jar"]
+#CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "user-service-0.0.1-SNAPSHOT.jar"]
 CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "app.jar"]

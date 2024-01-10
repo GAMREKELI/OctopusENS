@@ -1,9 +1,22 @@
-FROM openjdk:17-jdk-alpine
+FROM maven:3.8.3-openjdk-17 AS build
 
-WORKDIR /app
+COPY ./target/notification-email-service-0.0.1-SNAPSHOT.jar ./app.jar
 
-# Копирование JAR-файла в контейнер
-COPY notification/build/libs/consumer-0.0.1-SNAPSHOT.jar consumer.jar
+#WORKDIR /app
+#
+#COPY pom.xml .
+#RUN mvn dependency:go-offline
+#
+#COPY src ./src
+#RUN mvn package -DskipTests
+#
+#COPY src/main/resources/application.yml /app/src/main/resources/application.yml
+#
+#FROM openjdk:17
+#WORKDIR /app
+#COPY --from=build /app/target/notification-email-service-0.0.1-SNAPSHOT.jar /app
 
-# Команда для запуска JAR-файла
-CMD ["java", "-jar", "consumer.jar"]
+EXPOSE 8083
+
+#CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "notification-email-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "app.jar"]

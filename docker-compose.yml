@@ -1,42 +1,8 @@
-services:
-#  service-db:
-#    image: postgres:14.7-alpine
-#    environment:
-#      POSTGRES_USER: users
-#      POSTGRES_PASSWORD: yc6D9oay
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - ./infrastructure/db/create_db_users.sql:/docker-entrypoint-initdb.d/create_db_users.sql
-#      - ./infrastructure/db/create_db_danger.sql:/docker-entrypoint-initdb.d/create_db_danger.sql
-#      - db-data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U habrpguser -d habrdb" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#      start_period: 10s
-#    restart: unless-stopped
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 4G
-#
-#  pgadmin:
-#    container_name: pgadmin4_container
-#    image: dpage/pgadmin4:7
-#    restart: always
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-#      PGADMIN_DEFAULT_PASSWORD: root
-#    ports:
-#      - "5050:80"
-#    volumes:
-#      - pgadmin-data:/var/lib/pgadmin
+version: '3.8'
 
+services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -53,8 +19,9 @@ services:
       start_period: 10s
     ports:
       - "5433:5432"
+    hostname: postgres
     networks:
-      - postgres
+      - app
     restart: unless-stopped
 
   pgadmin:
@@ -68,9 +35,10 @@ services:
       - pgadmin:/var/lib/pgadmin
 
     ports:
-      - 5050:80
+      - "5050:80"
+    hostname: postgres
     networks:
-      - postgres
+      - app
     restart: unless-stopped
 
   redis:
@@ -78,6 +46,7 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    hostname: redis
     volumes:
       - /path/to/local/dаta:/root/redis
       - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
@@ -97,7 +66,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - 22181:2181
+      - "22181:2181"
+    hostname: kafka
 
   kafka:
     image: confluentinc/cp-kafka:6.2.4
@@ -105,7 +75,8 @@ services:
       zookeeper:
         condition: service_healthy
     ports:
-      - 29092:29092
+      - "29092:29092"
+    hostname: kafka
     healthcheck:
       test: [ "CMD", "nc", "-vz", "localhost", "9092" ]
       interval: 10s
@@ -125,6 +96,7 @@ services:
     container_name: kafka-ui
     ports:
       - "8080:8080"
+    hostname: kafka
     restart: always
     depends_on:
       kafka:
@@ -139,22 +111,118 @@ services:
       kafka:
         condition: service_healthy
     entrypoint: [ '/bin/sh', '-c' ]
+    hostname: kafka
     command: |
       "
       # blocks until kafka is reachable
       kafka-topics --bootstrap-server kafka:9092 --list
-      
+
       echo -e 'Creating kafka topics'
                kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic send-order-event --replication-factor 1 --partitions 2
-      
+
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:9092 --list
       "
+  registry-service:
+    build:
+      context: ./registry-service
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    hostname: registry-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ./registry-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  authentication-service:
+    build:
+      context: ./authentication-service
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    hostname: authentication-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ./authentication-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  api-gateway:
+    build:
+      context: ./API-Gateway
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    hostname: api-gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ./API-Gateway/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  api-service:
+    build:
+      context: ./API-Service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    hostname: api-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/danger
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+    volumes:
+      - ./API-Service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    hostname: user-service
+    environment:
+        SPRING_PROFILES_ACTIVE: docker
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/users
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: postgres
+    volumes:
+      - ./user-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  notification-service:
+    build:
+      context: ./notification-email-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    hostname: notification-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ./notification-email-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
 
 networks:
-  postgres:
+  app:
     driver: bridge
 
 volumes:
-  postgres:
   pgadmin:

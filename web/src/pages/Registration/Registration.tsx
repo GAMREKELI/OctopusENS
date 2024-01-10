@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Input } from '@chakra-ui/react'
 import MainForm from '../../components/MainForm/MainForm';
-import mainApi from '../../utils/mainApi';
+import mainApi from '../../utils/MainApi';
 
 interface IRegistration {
   isLogin: boolean,

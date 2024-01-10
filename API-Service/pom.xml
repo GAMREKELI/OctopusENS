@@ -108,13 +108,6 @@
 			<version>5.1.0</version>
 		</dependency>
 
-		<dependency>
-            <groupId>ru.gamrekeli</groupId>
-            <artifactId>notification-email-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 	<dependencyManagement>
 		<dependencies>

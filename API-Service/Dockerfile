@@ -1,9 +1,7 @@
-FROM openjdk:17-jdk-alpine
+FROM maven:3.8.3-openjdk-17 AS build
 
-WORKDIR /app
+COPY ./target/API-Service-0.0.1-SNAPSHOT.jar ./app.jar
 
-# Копирование JAR-файла в контейнер
-COPY API-Service/build/libs/producer-0.0.1-SNAPSHOT.jar producer.jar
+EXPOSE 8081
 
-# Команда для запуска JAR-файла
-CMD ["java", "-jar", "producer.jar"]
+CMD ["java", "-Dspring.profiles.active=DOCKER", "-jar", "app.jar"]

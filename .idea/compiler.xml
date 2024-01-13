@@ -22,7 +22,7 @@
       <module name="API-Gateway" options="-parameters" />
       <module name="API-Service" options="-parameters" />
       <module name="authentication-service" options="-parameters" />
-      <module name="config-service" options="-parameters" />
+      <module name="config-service" options="" />
       <module name="notification-email-service" options="-parameters" />
       <module name="registry-service" options="-parameters" />
       <module name="user-service" options="-parameters" />

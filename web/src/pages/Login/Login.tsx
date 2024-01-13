@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Button, Input } from '@chakra-ui/react'
 import MainForm from '../../components/MainForm/MainForm';
-import mainApi from '../../utils/mainApi';
+import mainApi from '../../utils/MainApi';
 
 interface ILogin {
   isLogin: boolean,
-  setIsLogin:  React.Dispatch<React.SetStateAction<boolean>>, 
+  setIsLogin:  React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 function Login({ isLogin, setIsLogin }: ILogin) {

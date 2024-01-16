@@ -1,10 +1,9 @@
 class MainApi {
   constructor(private baseUrl: string) { }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async getResponseDate(res: Response): Promise<never | any> {
+  private async getResponseDate(res: Response): Promise<never | unknown> {
     if (res.ok) {
-      return res.json();
+      return await res.json();
     }
 
     const error = await res.text();
@@ -57,6 +56,6 @@ class MainApi {
   }
 }
 
-const mainApi = new MainApi('http://192.168.0.106:9090')
+const mainApi = new MainApi('http://localhost:9090')
 
 export default mainApi;

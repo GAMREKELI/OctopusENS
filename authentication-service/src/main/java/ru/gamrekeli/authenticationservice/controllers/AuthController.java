@@ -37,6 +37,7 @@ public class AuthController {
 
         if (authentication.isAuthenticated()) {
             ResponseToken responseToken = ResponseToken.builder()
+                    .userId(authService.getUserId(request))
                     .jwtToken(authService.generateToken(request.getLogin()))
                     .build();
             return new ResponseEntity<>(responseToken, HttpStatus.OK);

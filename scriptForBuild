@@ -1,0 +1,19 @@
+#!/bin/bash
+cd user-service
+mvn clean package
+cd ..
+cd registry-service
+mvn clean package
+cd ..
+cd notification-email-service
+mvn clean package
+cd ..
+cd authentication-service
+mvn clean package
+cd ..
+cd API-Service
+mvn clean package
+cd ..
+cd API-Gateway
+mvn clean package
+cd ..

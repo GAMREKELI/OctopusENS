@@ -26,13 +26,13 @@ public class FriendShip {
     @JoinColumn(
             name = "user_id"
     )
-    private User user; // to
+    private User user; // from
 
     @ManyToOne
     @JoinColumn(
             name = "friend_id"
     )
-    private User friend; // from
+    private User friend; // to
 
     @Enumerated(EnumType.STRING)
     private Status status;

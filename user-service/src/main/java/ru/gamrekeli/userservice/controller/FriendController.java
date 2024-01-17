@@ -41,8 +41,8 @@ public class FriendController {
     @PostMapping("/add/{userId}/{friendId}")
     public ResponseEntity<FriendShip> addFriend(@PathVariable("userId") Long userId,
                                                 @PathVariable("friendId") Long friendId) throws NoSuchElementException {
-        if (!userId.equals(friendId)) {
-            friendServiceImpl.addFriend(userId, friendId);
+        int response = friendServiceImpl.addFriend(userId, friendId);
+        if (response != 0) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -57,7 +57,6 @@ public class FriendController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
 
     @ResponseBody

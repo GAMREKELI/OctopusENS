@@ -32,7 +32,7 @@ public class FriendServiceImpl implements FriendService {
         int len = listSubscribe.size();
         if (len != 0) {
             for (int i = 0; i < len; i ++) {
-                listUsers.add(listSubscribe.get(i).getFriend());
+                listUsers.add(listSubscribe.get(i).getUser());
             }
         }
         return listUsers;
@@ -65,14 +65,25 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void addFriend(Long userId, Long friendId) throws NoSuchElementException{
-        friendShipRepository.save(
-                FriendShip.builder()
-                        .user(userRepository.findById(friendId).get())
-                        .friend(userRepository.findById(userId).get())
-                        .status(Status.NO)
-                        .build()
-        );
+    public int addFriend(Long userId, Long friendId) throws NoSuchElementException{
+        if (!userId.equals(friendId)) {
+            int countRows = friendShipRepository.countFriendShipByUserIdAndFriendId(userId, friendId);
+            if (countRows < 1) {
+                friendShipRepository.save(
+                        FriendShip.builder()
+                                .user(userRepository.findById(userId).get())
+                                .friend(userRepository.findById(friendId).get())
+                                .status(Status.NO)
+                                .build()
+                );
+                return 1;
+            }
+            else {
+                log.info("<<<<<<<<<<<<<<<<<<<<<<" + " Связь с пользователями уже имеется " + ">>>>>>>>>>>>>>>>>>>>>>");
+
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -98,6 +109,7 @@ public class FriendServiceImpl implements FriendService {
                 log.info("<<<<<<<<<<<<<<<<<<<<<<" + " userId или friendId отсутствуют в базе " + ">>>>>>>>>>>>>>>>>>>>>>");
                 return 0;
             } else {
+                friendShipRepository.replaceUserIdAndFriendId(userId, friendId);
                 log.info("<<<<<<<<<<<<<<<<<<<<<<" + " Удаление прошло успешно " + ">>>>>>>>>>>>>>>>>>>>>>");
                 return 1;
             }

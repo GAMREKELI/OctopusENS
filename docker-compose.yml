@@ -1,42 +1,8 @@
-services:
-#  service-db:
-#    image: postgres:14.7-alpine
-#    environment:
-#      POSTGRES_USER: users
-#      POSTGRES_PASSWORD: yc6D9oay
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - ./infrastructure/db/create_db_users.sql:/docker-entrypoint-initdb.d/create_db_users.sql
-#      - ./infrastructure/db/create_db_danger.sql:/docker-entrypoint-initdb.d/create_db_danger.sql
-#      - db-data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U habrpguser -d habrdb" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#      start_period: 10s
-#    restart: unless-stopped
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 4G
-#
-#  pgadmin:
-#    container_name: pgadmin4_container
-#    image: dpage/pgadmin4:7
-#    restart: always
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-#      PGADMIN_DEFAULT_PASSWORD: root
-#    ports:
-#      - "5050:80"
-#    volumes:
-#      - pgadmin-data:/var/lib/pgadmin
+version: '3.8'
 
+services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -53,8 +19,9 @@ services:
       start_period: 10s
     ports:
       - "5433:5432"
+    hostname: postgres
     networks:
-      - postgres
+      - app
     restart: unless-stopped
 
   pgadmin:
@@ -68,9 +35,10 @@ services:
       - pgadmin:/var/lib/pgadmin
 
     ports:
-      - 5050:80
+      - "5050:80"
+    hostname: postgres
     networks:
-      - postgres
+      - app
     restart: unless-stopped
 
   redis:
@@ -78,6 +46,7 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    hostname: redis
     volumes:
       - /path/to/local/dаta:/root/redis
       - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
@@ -85,6 +54,8 @@ services:
       - REDIS_PASSWORD=12345678
       - REDIS_PORT=6379
       - REDIS_DATABASES=16
+    networks:
+      - app
 
   zookeeper:
     image: confluentinc/cp-zookeeper:6.2.4
@@ -97,15 +68,18 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - 22181:2181
+      - "22181:2181"
+    networks:
+      - app
 
-  kafka:
+  kafka-server1:
     image: confluentinc/cp-kafka:6.2.4
     depends_on:
       zookeeper:
         condition: service_healthy
     ports:
-      - 29092:29092
+      - "29092:29092"
+    hostname: kafka
     healthcheck:
       test: [ "CMD", "nc", "-vz", "localhost", "9092" ]
       interval: 10s
@@ -115,10 +89,12 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: OUTSIDE://:29092,INTERNAL://:9092
-      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://localhost:29092,INTERNAL://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: OUTSIDE://localhost:29092,INTERNAL://kafka-server1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - app
 
   kafka-ui:
     image: provectuslabs/kafka-ui
@@ -127,34 +103,173 @@ services:
       - "8080:8080"
     restart: always
     depends_on:
-      kafka:
+      kafka-server1:
         condition: service_healthy
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092 #,kafka:9093
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-server1:9092
+    networks:
+      - app
 
   kafka-topics-generator:
     image: confluentinc/cp-kafka:6.2.4
     depends_on:
-      kafka:
+      kafka-server1:
         condition: service_healthy
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
       "
       # blocks until kafka is reachable
-      kafka-topics --bootstrap-server kafka:9092 --list
-      
+      kafka-topics --bootstrap-server kafka-server1:9092 --list
+
       echo -e 'Creating kafka topics'
-               kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic send-order-event --replication-factor 1 --partitions 2
-      
+               kafka-topics --bootstrap-server kafka-server1:9092 --create --if-not-exists --topic send-order-event --replication-factor 1 --partitions 2
+
       echo -e 'Successfully created the following topics:'
-      kafka-topics --bootstrap-server kafka:9092 --list
+      kafka-topics --bootstrap-server kafka-server1:9092 --list
       "
 
+  registry-service:
+    build:
+      context: ./registry-service
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    hostname: registry-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry-service:8761/eureka/
+    volumes:
+      - ./registry-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  authentication-service:
+    build:
+      context: ./authentication-service
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    hostname: authentication-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry-service:8761/eureka/
+    volumes:
+      - ./authentication-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  api-gateway:
+    build:
+      context: ./API-Gateway
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    hostname: api-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry-service:8761/eureka/
+#     -----------------------------------------------------------------------------------------
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: api-service
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://api-service:8081
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: Path=/api/v1/send/**
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_FILTERS[0]: AuthenticationFilter
+#     -----------------------------------------------------------------------------------------
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: user-service
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://user-service:8082
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: Path=/api/v1/user/**
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_FILTERS[0]: AuthenticationFilter
+#     -----------------------------------------------------------------------------------------
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: auth-service
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://authentication-service:9000
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: Path=/auth/**
+#     -----------------------------------------------------------------------------------------
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: health-check
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://user-service:8082
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: Path=/health/user-service/**
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_FILTERS[0]: AuthenticationFilter
+    volumes:
+      - ./API-Gateway/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    networks:
+      - app
+    restart: always
+
+  api-service:
+    build:
+      context: ./API-Service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    hostname: api-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/danger
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-server1:9092
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: 12345678
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry-service:8761/eureka/
+      USER-SERVICE_HEALTH_ENDPOINT: http://api-gateway:9090/health/user-service/health
+    volumes:
+      - ./API-Service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    depends_on:
+      - kafka-server1
+      - redis
+      - postgres
+    networks:
+      - app
+    restart: always
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    hostname: user-service
+    environment:
+        SPRING_PROFILES_ACTIVE: docker
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/users
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: postgres
+        SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-server1:9092
+        EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry-service:8761/eureka/
+    volumes:
+      - ./user-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    depends_on:
+      - kafka-server1
+      - postgres
+    networks:
+      - app
+    restart: always
+
+  notification-service:
+    build:
+      context: ./notification-email-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    hostname: notification-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-server1:9092
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry-service:8761/eureka/
+      KAFKA_SERVERS: kafka:29092
+    volumes:
+      - ./notification-email-service/src/main/resources/application-docker.yml:/app/src/main/resources/application.yml
+    depends_on:
+      - kafka-server1
+    networks:
+      - app
+    restart: always
+
 networks:
-  postgres:
+  app:
     driver: bridge
 
 volumes:
-  postgres:
   pgadmin:

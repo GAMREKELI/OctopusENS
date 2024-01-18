@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ru.gamrekeli.userservice.entity.AuthorizationRequest;
 import ru.gamrekeli.userservice.entity.User;
 import ru.gamrekeli.userservice.service.UserServiceImpl;
 
@@ -34,6 +35,12 @@ public class RegisterController {
 //        System.out.println("\n\n<<<<<<<<<<<<<<<" + user.getLogin() + ">>>>>>>>>>>>>>>>\n\n");
 //        return new ResponseEntity<> (userService.getUser(user), HttpStatus.OK);
 //    }
+
+    @ResponseBody
+    @GetMapping("/getuser")
+    public ResponseEntity<String> getUserId(@RequestParam("login") String login) {
+        return new ResponseEntity<>(userServiceImpl.getUserId(login).toString(), HttpStatus.OK);
+    }
 
     @ResponseBody
     @PostMapping("/login")

@@ -1,51 +1,42 @@
 import { useState } from 'react'
-import { Button, Input } from '@chakra-ui/react'
+import { Button, Input, Text } from '@chakra-ui/react'
 import MainForm from '../../components/MainForm/MainForm';
 import mainApi from '../../utils/MainApi';
+import { useForm } from 'react-hook-form';
+import { IRegistrationFormInputs } from '../../types';
 
 interface IRegistration {
   isLogin: boolean,
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-// "login": "pdursley",
-// "password": "Q1234qwe",
-// "firstName": "Nikita",
-// "lastName": "Gamrekeli",
-// "email": "nekkimark2@gmail.com",
-// "phoneNumber": "+79105988089"
-
 function Registration({ isLogin, setIsLogin }: IRegistration) {
-  const [login, setLogin] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [submitError, setSubmitError] = useState<string>('');
 
-  function onSubmit(evt: React.FormEvent<HTMLFormElement>) {
-    evt.preventDefault();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm<IRegistrationFormInputs>();
 
-    mainApi.sigUp(
-      login,
-      password,
-      firstName,
-      lastName,
-      email,
-      phoneNumber
-    );
-
-    setLogin('');
-    setPassword('');
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPhoneNumber('');
-  }
+  const onSubmit = handleSubmit((data) => {
+    mainApi.sigUp(data)
+      .then(() => {
+        reset()
+      })
+      .catch((err) => {
+        if (err.status === 403) {
+          setSubmitError('Неправильно заполнены данные.')
+        } else {
+          setSubmitError('Сервер не отвечает.')
+        }
+      });
+  });
 
   return (
     <MainForm
-      name='login'
+      name='sigUp'
       onSubmit={onSubmit}
       isLogin={isLogin}
       setIsLogin={setIsLogin}
@@ -55,60 +46,125 @@ function Registration({ isLogin, setIsLogin }: IRegistration) {
         width='100%'
         placeholder='Логин'
         size='lg'
-        isRequired
-        onChange={(evt) => setLogin(evt.target.value)}
-        value={login}
+        {
+        ...register(
+          'login',
+          {
+            required: 'Обязательное поле',
+            minLength: {
+              value: 3,
+              message: 'Длина поля должна быть не менее 3 символов.'
+            }
+          }
+        )
+        }
       />
+      <div className='main-form__error'>
+        <Text fontSize='xs' color='red'>{errors.login?.message || ''}</Text>
+      </div>
       <Input
         type='password'
         width='100%'
         placeholder='Пароль'
         size='lg'
-        isRequired
-        onChange={(evt) => setPassword(evt.target.value)}
-        value={password}
+        {
+        ...register(
+          'password',
+          {
+            required: 'Обязательное поле',
+            minLength: {
+              value: 7,
+              message: 'Длина поля должна быть не менее 7 символов.'
+            }
+          }
+        )
+        }
       />
+      <div className='main-form__error'>
+        <Text fontSize='xs' color='red'>{errors.password?.message || ''}</Text>
+      </div>
       <Input
         type='text'
-        width='49%'
+        width='100%'
         placeholder='Имя'
         size='lg'
-        isRequired
-        onChange={(evt) => setFirstName(evt.target.value)}
-        value={firstName}
+        {
+        ...register(
+          'firstName',
+          {
+            required: 'Обязательное поле',
+            minLength: {
+              value: 2,
+              message: 'Длина поля должна быть не менее 2 символов.'
+            }
+          }
+        )
+        }
       />
+      <div className='main-form__error'>
+        <Text fontSize='xs' color='red'>{errors.firstName?.message || ''}</Text>
+      </div>
       <Input
         type='text'
-        width='49%'
+        width='100%'
         placeholder='Фамилия'
         size='lg'
-        isRequired
-        onChange={(evt) => setLastName(evt.target.value)}
-        value={lastName}
+        {
+        ...register(
+          'lastName',
+          {
+            required: 'Обязательное поле',
+            minLength: {
+              value: 2,
+              message: 'Длина поля должна быть не менее 2 символов.'
+            }
+          }
+        )
+        }
       />
+      <div className='main-form__error'>
+        <Text fontSize='xs' color='red'>{errors.lastName?.message || ''}</Text>
+      </div>
       <Input
         type='email'
         width='100%'
         placeholder='Почта'
         size='lg'
-        isRequired
-        onChange={(evt) => setEmail(evt.target.value)}
-        value={email}
+        {
+        ...register(
+          'email',
+          {
+            required: 'Обязательное поле',
+            pattern: {
+              value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+              message: 'Введите корректный адрес электронной почты.'
+            }
+          }
+        )
+        }
       />
+      <div className='main-form__error'>
+        <Text fontSize='xs' color='red'>{errors.email?.message || ''}</Text>
+      </div>
       <Input
-        type='tel'
+        type='number'
         width='100%'
         placeholder='Телефон'
         size='lg'
-        isRequired
-        onChange={(evt) => setPhoneNumber(evt.target.value)}
-        value={phoneNumber}
+        {...register('phoneNumber', { required: 'Обязательное поле.' })}
       />
+      <div className='main-form__error'>
+        <Text fontSize='xs' color='red'>{errors.phoneNumber?.message || ''}</Text>
+      </div>
+      <div className='main-form__error'>
+        <Text fontSize='xs' color='red'>{submitError || ''}</Text>
+      </div>
       <Button
         type='submit'
         colorScheme='teal'
         size='lg'
         width='100%'
+        onClick={() => setSubmitError('')}
       >
         Зарегистрироваться
       </Button>

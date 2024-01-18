@@ -1,3 +1,5 @@
+import { ILoginFormInputs, IRegistrationFormInputs } from "../types";
+
 class MainApi {
   constructor(private baseUrl: string) { }
 
@@ -6,56 +8,40 @@ class MainApi {
       return await res.json();
     }
 
-    const error = await res.text();
+    // const error = await res.text();
 
-    return Promise.reject(JSON.parse(error));
+    return Promise.reject(res);
   }
 
-  public async sigIn(login: string, password: string) {
-    const res = await fetch(
-      `${this.baseUrl}/auth/token`,
-      {
-        method: 'POST',
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ login, password }),
-      }
-    )
-
-    return this.getResponseDate(res);
+  private setPostOptions<T>(data: T): object {
+    return {
+      method: 'POST',
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
   }
 
-  public async sigUp(
-    login: string,
-    password: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    phoneNumber: string
-  ) {
+  public async sigIn(data: ILoginFormInputs) {
+      const res = await fetch(
+        `${this.baseUrl}/auth/token`,
+        this.setPostOptions(data),
+      );
+
+      return this.getResponseDate(res);
+  }
+
+  public async sigUp(data: IRegistrationFormInputs) {
     const res = await fetch(
       `${this.baseUrl}/auth/registration`,
-      {
-        method: 'POST',
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          login,
-          password,
-          firstName,
-          lastName,
-          email,
-          phoneNumber
-        }),
-      }
-    )
+      this.setPostOptions(data),
+    );
 
     return this.getResponseDate(res);
   }
 }
 
-const mainApi = new MainApi('http://localhost:9090')
+const mainApi = new MainApi('http://localhost:9090');
 
 export default mainApi;

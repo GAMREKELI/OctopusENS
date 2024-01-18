@@ -1,17 +1,21 @@
 import { useState } from 'react'
-import { Button, Input, Text } from '@chakra-ui/react'
+import { Button, Input, Spinner, Text } from '@chakra-ui/react'
 import MainForm from '../../components/MainForm/MainForm';
 import mainApi from '../../utils/MainApi';
 import { useForm } from 'react-hook-form';
 import { IRegistrationFormInputs } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 interface IRegistration {
-  isLogin: boolean,
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
+  setShowAlert: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertMessage: React.Dispatch<React.SetStateAction<string>>,
 }
 
-function Registration({ isLogin, setIsLogin }: IRegistration) {
+function Registration({ setShowAlert, setAlertMessage }: IRegistration) {
   const [submitError, setSubmitError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -21,9 +25,17 @@ function Registration({ isLogin, setIsLogin }: IRegistration) {
   } = useForm<IRegistrationFormInputs>();
 
   const onSubmit = handleSubmit((data) => {
-    mainApi.sigUp(data)
-      .then(() => {
-        reset()
+    setIsLoading(true);
+
+    mainApi.signUp(data)
+      .then((res) => {
+        if (res.ok) {
+          reset()
+          navigate('/sign-in', { replace: true });
+
+          setShowAlert(true);
+          setAlertMessage('Вы успешно зарегистрировались!')
+        }
       })
       .catch((err) => {
         if (err.status === 403) {
@@ -31,15 +43,14 @@ function Registration({ isLogin, setIsLogin }: IRegistration) {
         } else {
           setSubmitError('Сервер не отвечает.')
         }
-      });
+      })
+      .finally(() => setIsLoading(false));
   });
 
   return (
     <MainForm
-      name='sigUp'
+      name='signUp'
       onSubmit={onSubmit}
-      isLogin={isLogin}
-      setIsLogin={setIsLogin}
     >
       <Input
         type='text'
@@ -165,8 +176,12 @@ function Registration({ isLogin, setIsLogin }: IRegistration) {
         size='lg'
         width='100%'
         onClick={() => setSubmitError('')}
+        isDisabled={isLoading}
       >
-        Зарегистрироваться
+        {isLoading
+          ? <Spinner />
+          : 'Зарегистрироваться'
+        }
       </Button>
     </MainForm>
   )

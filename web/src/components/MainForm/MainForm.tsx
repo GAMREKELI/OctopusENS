@@ -1,16 +1,18 @@
 import { Button, Heading, Text } from '@chakra-ui/react';
 import './MainForm.css';
 import redButton from '../../../public/red-button.svg'
+import { useNavigate } from 'react-router-dom';
 
 interface IMainForm {
   name: string,
   onSubmit: (e?: React.BaseSyntheticEvent<object, unknown, unknown> | undefined) => Promise<void>,
-  children: React.ReactNode;
-  isLogin: boolean,
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
+  children: React.ReactNode,
+  isLogin?: boolean,
 }
 
-function MainForm({ name, onSubmit, children, isLogin, setIsLogin }: IMainForm) {
+function MainForm({ name, onSubmit, children, isLogin }: IMainForm) {
+  const navigate = useNavigate();
+
   return (
     <main className='main-form'>
       <img
@@ -31,14 +33,14 @@ function MainForm({ name, onSubmit, children, isLogin, setIsLogin }: IMainForm) 
       >
         {children}
       </form>
-      {isLogin
+      {isLogin === true
         ? (
           <Text>
             Ещё не зарегистрированы?&nbsp;
             <Button
               colorScheme='blue'
               variant='link'
-              onClick={() => setIsLogin(false)}
+              onClick={() => navigate('/sign-up')}
             >
               Регистрация
             </Button>
@@ -50,7 +52,7 @@ function MainForm({ name, onSubmit, children, isLogin, setIsLogin }: IMainForm) 
             <Button
               colorScheme='blue'
               variant='link'
-              onClick={() => setIsLogin(true)}
+              onClick={() => navigate('/sign-in')}
             >
               Войти
             </Button>

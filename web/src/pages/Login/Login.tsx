@@ -1,17 +1,24 @@
 import { useState } from 'react'
-import { Button, Input, Text } from '@chakra-ui/react'
+import { Button, Input, Spinner, Text } from '@chakra-ui/react'
 import MainForm from '../../components/MainForm/MainForm';
 import { useForm } from 'react-hook-form';
-import { ILoginFormInputs } from '../../types'
+import { ILoginFormInputs, ILoginData } from '../../types'
 import mainApi from '../../utils/MainApi';
+import useAuth from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface ILogin {
-  isLogin: boolean,
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
+  setShowAlert: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertMessage: React.Dispatch<React.SetStateAction<string>>,
 }
 
-function Login({ isLogin, setIsLogin }: ILogin) {
+function Login({ setShowAlert, setAlertMessage }: ILogin) {
   const [submitError, setSubmitError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { setAuth } = useAuth();
+
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -21,10 +28,25 @@ function Login({ isLogin, setIsLogin }: ILogin) {
   } = useForm<ILoginFormInputs>();
 
   const onSubmit = handleSubmit((data) => {
-    mainApi.sigIn(data)
-      .then((res) => {
-        console.log(res)
-        reset()
+    setIsLoading(true);
+
+    mainApi.signIn(data)
+      .then((data) => {
+        const { jwtToken } = data as ILoginData;
+
+        if (jwtToken) {
+          localStorage.setItem('jwt', jwtToken)
+
+          setAuth(true);
+          reset();
+
+          navigate('/', { replace: true });
+
+          setShowAlert(true);
+          setAlertMessage('Вы успешно вошли в аккаунт!')
+        } else {
+          throw new Error('Токен отсутствует');
+        }
       })
       .catch((err) => {
         console.log(err)
@@ -33,15 +55,15 @@ function Login({ isLogin, setIsLogin }: ILogin) {
         } else {
           setSubmitError('Сервер не отвечает.')
         }
-      });
+      })
+      .finally(() => setIsLoading(false));
   });
 
   return (
     <MainForm
-      name='sigIn'
+      name='signIn'
       onSubmit={onSubmit}
-      isLogin={isLogin}
-      setIsLogin={setIsLogin}
+      isLogin
     >
       <Input
         width='100%'
@@ -77,8 +99,12 @@ function Login({ isLogin, setIsLogin }: ILogin) {
         size='lg'
         width='100%'
         onClick={() => setSubmitError('')}
+        isDisabled={isLoading}
       >
-        Войти
+        {isLoading
+          ? <Spinner />
+          : 'Войти'
+        }
       </Button>
     </MainForm>
   )

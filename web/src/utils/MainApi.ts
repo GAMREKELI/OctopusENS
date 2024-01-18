@@ -23,7 +23,7 @@ class MainApi {
     }
   }
 
-  public async sigIn(data: ILoginFormInputs) {
+  public async signIn(data: ILoginFormInputs) {
       const res = await fetch(
         `${this.baseUrl}/auth/token`,
         this.setPostOptions(data),
@@ -32,13 +32,13 @@ class MainApi {
       return this.getResponseDate(res);
   }
 
-  public async sigUp(data: IRegistrationFormInputs) {
+  public async signUp(data: IRegistrationFormInputs) {
     const res = await fetch(
       `${this.baseUrl}/auth/registration`,
       this.setPostOptions(data),
     );
 
-    return this.getResponseDate(res);
+    return res;
   }
 }
 

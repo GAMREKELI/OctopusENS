@@ -11,3 +11,8 @@ export interface IRegistrationFormInputs {
   email: string,
   phoneNumber: string
 }
+
+export interface ILoginData {
+  jwtToken: string,
+  userId: string,
+}

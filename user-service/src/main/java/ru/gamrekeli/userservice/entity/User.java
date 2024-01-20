@@ -68,4 +68,15 @@ public class User {
             nullable = false
     )
     private String role;
+
+    public UserWithoutPass toDTO() {
+        return UserWithoutPass.builder()
+                .userId(userId)
+                .login(login)
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .build();
+    }
 }

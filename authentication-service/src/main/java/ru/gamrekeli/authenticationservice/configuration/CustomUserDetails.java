@@ -2,7 +2,7 @@ package ru.gamrekeli.authenticationservice.configuration;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.gamrekeli.authenticationservice.entities.User;
+import ru.gamrekeli.authenticationservice.entity.User;
 
 import java.util.Collection;
 

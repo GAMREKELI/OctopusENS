@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.gamrekeli.authenticationservice.dto.AuthRequest;
 import ru.gamrekeli.authenticationservice.dto.AuthorizationRequest;
-import ru.gamrekeli.authenticationservice.entities.User;
+import ru.gamrekeli.authenticationservice.dto.ResponseToken;
+import ru.gamrekeli.authenticationservice.entity.User;
 
 @Service
 @Slf4j
@@ -38,11 +39,18 @@ public class AuthService {
         return "user added to the system";
     }
 
-    public String getUserId(AuthorizationRequest request) {
-        String userId = restTemplate.getForObject("http://user-service/api/v1/user/getuser?login=" + request.getLogin(), String.class);
-        if (userId == null)
-            return "null";
-        return userId;
+    public ResponseToken getUserId(AuthorizationRequest request) {
+        User user = restTemplate.getForObject("http://user-service/api/v1/user/getuser?login=" + request.getLogin(), User.class);
+        ResponseToken responseToken = ResponseToken.builder()
+                .userId(user.getUserId())
+                .login(user.getLogin())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
+                .jwtToken(generateToken(request.getLogin()))
+                .build();
+        return responseToken;
     }
     public String generateToken(String login) {
         return jwtUtil.generateToken(login);

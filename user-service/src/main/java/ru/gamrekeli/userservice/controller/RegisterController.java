@@ -38,8 +38,8 @@ public class RegisterController {
 
     @ResponseBody
     @GetMapping("/getuser")
-    public ResponseEntity<String> getUserId(@RequestParam("login") String login) {
-        return new ResponseEntity<>(userServiceImpl.getUserId(login).toString(), HttpStatus.OK);
+    public ResponseEntity<User> getUser(@RequestParam("login") String login) {
+        return new ResponseEntity<>(userServiceImpl.getUserId(login), HttpStatus.OK);
     }
 
     @ResponseBody

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.gamrekeli.authenticationservice.configuration.CustomUserDetails;
 import ru.gamrekeli.authenticationservice.dto.AuthRequest;
-import ru.gamrekeli.authenticationservice.entities.User;
+import ru.gamrekeli.authenticationservice.entity.User;
 
 import java.util.Optional;
 

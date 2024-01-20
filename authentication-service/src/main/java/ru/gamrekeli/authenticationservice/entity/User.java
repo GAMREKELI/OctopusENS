@@ -1,4 +1,4 @@
-package ru.gamrekeli.authenticationservice.entities;
+package ru.gamrekeli.authenticationservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

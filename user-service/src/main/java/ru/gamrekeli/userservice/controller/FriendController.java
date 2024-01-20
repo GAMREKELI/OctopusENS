@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.gamrekeli.userservice.entity.FriendShip;
 import ru.gamrekeli.userservice.entity.User;
+import ru.gamrekeli.userservice.entity.UserWithoutPass;
 import ru.gamrekeli.userservice.service.FriendServiceImpl;
 
 import java.util.List;
@@ -27,13 +28,13 @@ public class FriendController {
 
     @ResponseBody
     @GetMapping("/friends/{userId}")
-    public List<User> showFriends(@PathVariable("userId") Long userId) {
+    public List<UserWithoutPass> showFriends(@PathVariable("userId") Long userId) {
         return friendServiceImpl.getFriends(userId);
     }
 
     @ResponseBody
     @GetMapping("/subscribers/{userId}")
-    public List<User> showSubscribers(@PathVariable("userId") Long userId) {
+    public List<UserWithoutPass> showSubscribers(@PathVariable("userId") Long userId) {
         return friendServiceImpl.getSubscribers(userId);
     }
 

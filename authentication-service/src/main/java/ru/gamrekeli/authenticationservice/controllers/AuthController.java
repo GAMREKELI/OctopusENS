@@ -36,11 +36,7 @@ public class AuthController {
                 request.getLogin(), request.getPassword()));
 
         if (authentication.isAuthenticated()) {
-            ResponseToken responseToken = ResponseToken.builder()
-                    .userId(authService.getUserId(request))
-                    .jwtToken(authService.generateToken(request.getLogin()))
-                    .build();
-            return new ResponseEntity<>(responseToken, HttpStatus.OK);
+            return new ResponseEntity<>(authService.getUserId(request), HttpStatus.OK);
         } else {
             throw new RuntimeException("invalid access");
         }

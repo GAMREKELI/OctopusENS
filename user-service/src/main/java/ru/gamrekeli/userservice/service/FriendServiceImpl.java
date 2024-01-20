@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.gamrekeli.userservice.entity.FriendShip;
 import ru.gamrekeli.userservice.entity.User;
+import ru.gamrekeli.userservice.entity.UserWithoutPass;
 import ru.gamrekeli.userservice.entity.status.Status;
 import ru.gamrekeli.userservice.repository.FriendShipRepository;
 import ru.gamrekeli.userservice.repository.UserRepository;
@@ -25,32 +26,32 @@ public class FriendServiceImpl implements FriendService {
     private FriendShipRepository friendShipRepository;
 
     @Override
-    public List<User> getSubscribers(Long userId) {
-        List<User> listUsers = new ArrayList<>();
+    public List<UserWithoutPass> getSubscribers(Long userId) {
+        List<UserWithoutPass> listUsers = new ArrayList<>();
 
         List<FriendShip> listSubscribe = friendShipRepository.findAllSubscribersByUserId(userId);
         int len = listSubscribe.size();
         if (len != 0) {
             for (int i = 0; i < len; i ++) {
-                listUsers.add(listSubscribe.get(i).getUser());
+                listUsers.add(listSubscribe.get(i).getUser().toDTO());
             }
         }
         return listUsers;
     }
 
     @Override
-    public List<User> getFriends(Long userId) {
-        List<User> listUsers = new ArrayList<>();
+    public List<UserWithoutPass> getFriends(Long userId) {
+        List<UserWithoutPass> listUsers = new ArrayList<>();
 
         List<FriendShip> listFriends = friendShipRepository.findAllFriendsByUserId(userId);
         int len = listFriends.size();
         if (len != 0) {
             for (int i = 0; i < len; i ++) {
                 if (listFriends.get(i).getFriend().getUserId().equals(userId)) {
-                    listUsers.add(listFriends.get(i).getUser());
+                    listUsers.add(listFriends.get(i).getUser().toDTO());
                 }
                 else {
-                    listUsers.add(listFriends.get(i).getFriend());
+                    listUsers.add(listFriends.get(i).getFriend().toDTO());
                 }
             }
         }

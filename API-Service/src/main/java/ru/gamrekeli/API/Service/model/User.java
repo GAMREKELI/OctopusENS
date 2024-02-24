@@ -3,8 +3,7 @@ package ru.gamrekeli.API.Service.model;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

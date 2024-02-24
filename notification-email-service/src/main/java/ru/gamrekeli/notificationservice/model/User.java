@@ -2,12 +2,10 @@ package ru.gamrekeli.notificationservice.model;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
 public class User {
     private Long userId;
     private String login;

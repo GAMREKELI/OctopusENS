@@ -6,8 +6,6 @@ import ru.gamrekeli.userservice.entity.status.Status;
 
 @Entity
 @Data
-@Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,5 +1,6 @@
 package ru.gamrekeli.userservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.gamrekeli.userservice.entity.User;
@@ -8,6 +9,7 @@ import ru.gamrekeli.userservice.repository.UserRepository;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired

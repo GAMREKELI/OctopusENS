@@ -3,24 +3,26 @@ package ru.gamrekeli.userservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Table(name = "users",
         uniqueConstraints = @UniqueConstraint(
-                name = "email",
-                columnNames = "email"
+                name = "uniqueColumn",
+                columnNames = {"login", "email", "phone_number"}
         )
 )
+// step = 1
+@GenericGenerator(name = "sUsersOctopusENS", parameters = {@org.hibernate.annotations.Parameter(name = "sequence", value = "S_USERS")})
 public class User {
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY
+            strategy = GenerationType.SEQUENCE,
+            generator = "sUsersOctopusENS"
     )
     private Long userId;
 

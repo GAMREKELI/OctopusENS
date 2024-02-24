@@ -9,8 +9,10 @@ services:
       POSTGRES_PASSWORD: postgres
       PGDATA: /data/postgres
     volumes:
-      - ./infrastructure/db/create_db_users.sql:/docker-entrypoint-initdb.d/create_db_users.sql
-      - ./infrastructure/db/create_db_danger.sql:/docker-entrypoint-initdb.d/create_db_danger.sql
+      - ./postgres/db/create_db_users.sql:/docker-entrypoint-initdb.d/create_db_users.sql
+      - ./postgres/db/create_db_danger.sql:/docker-entrypoint-initdb.d/create_db_danger.sql
+      - ./postgres/sequence/create_sequence_users.sql:/docker-entrypoint-initdb.d/create_sequence_users.sql
+      - ./postgres/sequence/create_sequence_danger.sql:/docker-entrypoint-initdb.d/create_sequence_danger.sql
     healthcheck:
       interval: 10s
       timeout: 5s
